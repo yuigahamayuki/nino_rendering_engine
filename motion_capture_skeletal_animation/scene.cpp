@@ -31,6 +31,11 @@ void Scene::LoadModels(Renderer* renderer) {
 }
 
 void Scene::LoadCamera() {
+  // Note(wushiyuan): For a real game engine: read config file to determine camera's position and orientation.
+  Eigen::Vector3f camera_pos(0.f, 2.f, 2.f);
+  Eigen::Vector3f look_target(0.f, 1.f, 0.f);
+  Eigen::Vector3f up(0.f, 1.f, 0.f);
+  camera_.Set(camera_pos, look_target, up);
 }
 
 void Scene::LoadLights() {

@@ -116,7 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Admin\work\third_party\assimp\include;C:\Users\Admin\work\third_party\sources\glfw-3.3.4\include;C:\Users\Admin\work\third_party\glad\include;C:\Users\Admin\work\third_party\sources\glm-0.9.9.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Admin\work\third_party\assimp\include;C:\Users\Admin\work\third_party\sources\glfw-3.3.4\include;C:\Users\Admin\work\third_party\glad\include;C:\Users\Admin\work\third_party\sources\glm-0.9.9.8;C:\Users\Admin\work\third_party\sources\eigen-3.4.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="animation_manager.cpp" />
     <ClCompile Include="assimp_mesh.cpp" />
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GLFW_window.cpp" />
@@ -157,6 +158,7 @@
   <ItemGroup>
     <ClInclude Include="animation_manager.h" />
     <ClInclude Include="assimp_mesh.h" />
+    <ClInclude Include="camera.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="GLFW_window.h" />
     <ClInclude Include="GL_renderer.h" />
@@ -168,6 +170,7 @@
     <ClInclude Include="renderer.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene_manager.h" />
+    <ClInclude Include="util_linear_algebra_helper.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

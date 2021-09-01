@@ -3,6 +3,7 @@
 #include <map>
 
 #include "model.h"
+#include "camera.h"
 #include "renderer.h"
 
 namespace motion_animation {
@@ -25,6 +26,10 @@ class Scene {
   // Note(wushiyuan): For real game engine: read a config file for the scene, then load corresponding assets.
   void LoadSceneAssets(Renderer* renderer);
 
+  const Camera& GetCamera() const {
+    return camera_;
+  }
+
  private:
    void LoadModels(Renderer* renderer);
    void LoadCamera();
@@ -35,6 +40,7 @@ class Scene {
   std::string scene_name_;
 
   std::map<std::string, Model> models_;  // key: model_name value: Model object
+  Camera camera_;
 };  // class Scene
 
 }  // namespace motion_animation

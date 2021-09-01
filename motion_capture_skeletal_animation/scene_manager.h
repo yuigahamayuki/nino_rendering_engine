@@ -16,9 +16,20 @@ public:
 
   void AddScene(const std::string& scene_name, Renderer* renderer);
 
+  const Scene* GetCurrentScene() const {
+    const Scene* scene_ptr = nullptr;
+    if (scenes_.find(current_scene_name_) != scenes_.end()) {
+      scene_ptr = &(scenes_.at(current_scene_name_));
+    }
+
+    return scene_ptr;
+  }
+
 private:
   SceneManager() = default;
   std::map<std::string, Scene> scenes_;
+
+  std::string current_scene_name_;
 
 };  // class SceneManager
 
