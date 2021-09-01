@@ -24,53 +24,63 @@ void processInput(GLFWwindow* window) {
 
 namespace motion_animation {
 
-GLFWWindow::GLFWWindow(uint32_t width, uint32_t height) : Window(width, height) {
+GLWindow::GLWindow(uint32_t width, uint32_t height) : Window(width, height) {
+  Initialize();
+}
+
+GLWindow::~GLWindow() {
+  glfwTerminate();
+}
+
+void GLWindow::Loop(Renderer* renderer) {
+  if (!window_) {
+    return;
+  }
+  if (!renderer) {
+    return;
+  }
+  // render loop
+  // -----------
+  while (!glfwWindowShouldClose(window_))
+  {
+    // input
+    // -----
+    processInput(window_);
+
+    // render
+    // ------
+    // TODO(wushiyuan): use renderer to render
+    renderer->Render();
+
+    // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+    // -------------------------------------------------------------------------------
+    glfwSwapBuffers(window_);
+    glfwPollEvents();
+  }
+}
+
+void GLWindow::Initialize() {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-}
 
-GLFWWindow::~GLFWWindow() {
-  glfwTerminate();
-}
-
-void GLFWWindow::Loop() {
-  GLFWwindow* window = glfwCreateWindow(width_, height_, "LearnOpenGL", NULL, NULL);
-  if (window == NULL)
-  {
+  window_ = glfwCreateWindow(width_, height_, "LearnOpenGL", NULL, NULL);
+  if (window_ == NULL) {
     std::cout << "Failed to create GLFW window" << std::endl;
     glfwTerminate();
     return;
   }
-  glfwMakeContextCurrent(window);
-  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+  glfwMakeContextCurrent(window_);
+  glfwSetFramebufferSizeCallback(window_, framebuffer_size_callback);
 
   // glad: load all OpenGL function pointers
   // ---------------------------------------
+  // Note(wushiyuan): need to call this api before calling any OpenGL apis such as glGenVertexArrays
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
   {
     std::cout << "Failed to initialize GLAD" << std::endl;
     return;
-  }
-
-  // render loop
-  // -----------
-  while (!glfwWindowShouldClose(window))
-  {
-    // input
-    // -----
-    processInput(window);
-
-    // render
-    // ------
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-    // -------------------------------------------------------------------------------
-    glfwSwapBuffers(window);
-    glfwPollEvents();
   }
 }
 

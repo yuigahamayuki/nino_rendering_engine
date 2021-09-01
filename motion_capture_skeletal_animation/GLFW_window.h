@@ -2,17 +2,21 @@
 
 #include "window.h"
 
+class GLFWwindow;
+
 namespace motion_animation {
   
-class GLFWWindow : public Window {
+class GLWindow : public Window {
 public:
-  GLFWWindow(uint32_t width, uint32_t height);
-  ~GLFWWindow();
+  GLWindow(uint32_t width, uint32_t height);
+  ~GLWindow();
 
-  void Loop() override;
+  void Loop(Renderer* renderer) override;
 
 private:
+  void Initialize();
 
+  GLFWwindow* window_;
 };  // class GLFWWindow
 
 }  // namespace motion_animation

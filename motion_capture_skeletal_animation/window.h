@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "renderer.h"
+
 namespace motion_animation {
 
 class Window {
@@ -22,7 +24,7 @@ class Window {
     return height_;
   }
 
-  virtual void Loop() = 0;
+  virtual void Loop(Renderer* renderer) = 0;
 
  protected:
   uint32_t width_;

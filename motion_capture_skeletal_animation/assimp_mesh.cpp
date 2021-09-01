@@ -45,7 +45,7 @@ void AssimpMesh::GetVertexData(std::vector<Vertex>& vertices_data, size_t& verti
     auto mesh = assimp_scene_ptr_->mMeshes[mesh_index_of_assimp_];
 
     vertices_number = mesh->mNumVertices;
-    vertices_size = sizeof(Vertex) * vertices_number;
+    vertices_size = Mesh::GetSingleVertexSize() * vertices_number;
 
     SetVerticesNumber(vertices_number);
     SetVerticesSize(vertices_size);

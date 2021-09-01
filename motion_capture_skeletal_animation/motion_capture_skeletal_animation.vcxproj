@@ -116,7 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Admin\work\third_party\assimp\include;C:\Users\Admin\work\third_party\sources\glfw-3.3.4\include;C:\Users\Admin\work\third_party\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Admin\work\third_party\assimp\include;C:\Users\Admin\work\third_party\sources\glfw-3.3.4\include;C:\Users\Admin\work\third_party\glad\include;C:\Users\Admin\work\third_party\sources\glm-0.9.9.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,6 +161,7 @@
     <ClInclude Include="GLFW_window.h" />
     <ClInclude Include="GL_renderer.h" />
     <ClInclude Include="assets.h" />
+    <ClInclude Include="GL_shader_helper.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="model_importer.h" />

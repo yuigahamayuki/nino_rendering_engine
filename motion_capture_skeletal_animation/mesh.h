@@ -18,6 +18,10 @@ class Mesh {
     float bone_weights_[4]{};
   };  // struct Vertex
 
+  static size_t GetSingleVertexSize() {
+    return sizeof(Vertex);
+  }
+
   Mesh() = default;
   virtual ~Mesh() = default;
 
