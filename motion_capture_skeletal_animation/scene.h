@@ -29,6 +29,8 @@ class Scene {
    void LoadCamera();
    void LoadLights();
 
+   void LoadSingleModel(const std::string& model_file_name, const std::string& model_name);
+
   std::string scene_name_;
 
   std::map<std::string, Model> models_;  // key: model_name value: Model object

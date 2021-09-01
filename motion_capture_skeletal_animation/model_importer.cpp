@@ -33,15 +33,25 @@ bool ModelImporter::LoadModelFile(const std::string& model_file_path)
     if (assimp_scene_ptr_->HasMeshes()) std::cout << "has meshes" << std::endl;
     if (assimp_scene_ptr_->HasTextures()) std::cout << "has textures" << std::endl;
 
-    AnimationManager::GetSharedInstance().MakeBonesMapForModel("ruby");
-    std::vector<Mesh::Vertex> vertices_data;
-    size_t vertices_size = 0;
-    size_t vertices_number = 0;
-    AssimpMesh assimp_mesh(assimp_scene_ptr_, 0);
-    assimp_mesh.GetVertexData(vertices_data, vertices_size, vertices_number);
+    //AnimationManager::GetSharedInstance().MakeBonesMapForModel("ruby");
+    //std::vector<Mesh::Vertex> vertices_data;
+    //size_t vertices_size = 0;
+    //size_t vertices_number = 0;
+    //AssimpMesh assimp_mesh(assimp_scene_ptr_, 0);
+    //assimp_mesh.GetVertexData(vertices_data, vertices_size, vertices_number);
   }
 
   return load_success;
+}
+
+void ModelImporter::LoadAllMeshesForModel(const std::string& model_name, std::vector<std::unique_ptr<Mesh>>& meshes) {
+  if (assimp_scene_ptr_) {
+    AnimationManager::GetSharedInstance().MakeBonesMapForModel(model_name);
+    auto total_mesh_number = assimp_scene_ptr_->mNumMeshes;
+    for (uint32_t i = 0; i < total_mesh_number; ++i) {
+      meshes.emplace_back(std::make_unique<AssimpMesh>(assimp_scene_ptr_, i));
+    }
+  }
 }
 
 }  // namespace motion_animation

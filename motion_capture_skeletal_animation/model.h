@@ -22,6 +22,10 @@ class Model {
   Model(Model&&) = default;
   Model& operator=(Model&&) = default;
 
+  void LoadMeshes();
+
+  void GetAllMeshVertexData(std::vector<Mesh::Vertex>& all_meshes_vertices_data, size_t& all_meshes_vertices_size, size_t& all_meshes_vertices_number);
+
  private:
   std::string model_name_;
 

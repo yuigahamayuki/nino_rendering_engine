@@ -29,6 +29,14 @@ class Mesh {
     return diffuse_texture_name_;
   }
 
+  const size_t GetVerticesSize() const {
+    return vertices_size_;
+  }
+
+  const size_t GetVerticesNumber() const {
+    return vertices_number_;
+  }
+
   void SetMeshName(const std::string& mesh_name) {
     mesh_name_ = mesh_name;
   }
@@ -37,12 +45,23 @@ class Mesh {
     diffuse_texture_name_ = diffuse_texture_name;
   }
 
+  void SetVerticesSize(size_t vertices_size) {
+    vertices_size_ = vertices_size;
+  }
+
+  void SetVerticesNumber(size_t vertices_number) {
+    vertices_number_ = vertices_number;
+  }
+
   virtual void GetVertexData(std::vector<Vertex>& vertices_data, size_t& vertices_size, size_t& vertices_number) = 0;
   //virtual void GetIndexData(std::vector<uint32_t>& indices_data, )
 
  private:
   std::string mesh_name_;
   std::string diffuse_texture_name_;
+
+  size_t vertices_size_ = 0;
+  size_t vertices_number_ = 0;
 
 };  // class Mesh
 

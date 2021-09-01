@@ -36,12 +36,19 @@ void AssimpMesh::GetVertexData(std::vector<Vertex>& vertices_data, size_t& verti
   vertices_data.clear();
   vertices_size = 0;
   vertices_number = 0;
+  if (!assimp_scene_ptr_) {
+    return;
+  }
+
   auto total_mesh_number = assimp_scene_ptr_->mNumMeshes;
   if (mesh_index_of_assimp_ < total_mesh_number) {
     auto mesh = assimp_scene_ptr_->mMeshes[mesh_index_of_assimp_];
 
     vertices_number = mesh->mNumVertices;
     vertices_size = sizeof(Vertex) * vertices_number;
+
+    SetVerticesNumber(vertices_number);
+    SetVerticesSize(vertices_size);
 
     SetDiffuseTextureName(mesh->mTextureCoordsNames[0].C_Str());
 
