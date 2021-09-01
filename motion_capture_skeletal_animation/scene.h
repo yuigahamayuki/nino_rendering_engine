@@ -3,6 +3,7 @@
 #include <map>
 
 #include "model.h"
+#include "renderer.h"
 
 namespace motion_animation {
 
@@ -21,11 +22,11 @@ class Scene {
   Scene(Scene&&) = default;
   Scene& operator=(Scene&&) = default;
 
-  // For real game engine: read a config file for the scene, then load corresponding assets.
-  void LoadSceneAssets();
+  // Note(wushiyuan): For real game engine: read a config file for the scene, then load corresponding assets.
+  void LoadSceneAssets(Renderer* renderer);
 
  private:
-   void LoadModels();
+   void LoadModels(Renderer* renderer);
    void LoadCamera();
    void LoadLights();
 

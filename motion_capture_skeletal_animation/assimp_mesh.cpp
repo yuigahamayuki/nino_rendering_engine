@@ -70,7 +70,6 @@ void AssimpMesh::GetVertexData(std::vector<Vertex>& vertices_data, size_t& verti
       auto bone = mesh->mBones[i];
       const std::string bone_name = bone->mName.C_Str();
       uint32_t bone_index = AnimationManager::GetSharedInstance().FindBoneIndexForNameOfModel("ruby", bone_name); 
-      // TODO: use map to determine bone_index
       for (uint32_t j = 0; j < bone->mNumWeights; ++j) {
         auto vertex_id = bone->mWeights[j].mVertexId;
         auto bone_weight = bone->mWeights[j].mWeight;

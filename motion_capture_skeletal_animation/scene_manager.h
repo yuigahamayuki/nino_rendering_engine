@@ -1,6 +1,7 @@
 #pragma once
 
 #include "scene.h"
+#include "renderer.h"
 
 namespace motion_animation {
 
@@ -13,7 +14,7 @@ public:
   SceneManager(const SceneManager&) = delete;
   SceneManager& operator=(const SceneManager&) = delete;
 
-  void AddScene(const std::string& scene_name);
+  void AddScene(const std::string& scene_name, Renderer* renderer);
 
 private:
   SceneManager() = default;

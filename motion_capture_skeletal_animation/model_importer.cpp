@@ -4,7 +4,6 @@
 
 #include <assimp/postprocess.h>
 
-// TODO: test, delete
 #include "assimp_mesh.h"
 #include "animation_manager.h"
 
@@ -32,13 +31,6 @@ bool ModelImporter::LoadModelFile(const std::string& model_file_path)
     if (assimp_scene_ptr_->HasMaterials()) std::cout << "has materials" << std::endl;
     if (assimp_scene_ptr_->HasMeshes()) std::cout << "has meshes" << std::endl;
     if (assimp_scene_ptr_->HasTextures()) std::cout << "has textures" << std::endl;
-
-    //AnimationManager::GetSharedInstance().MakeBonesMapForModel("ruby");
-    //std::vector<Mesh::Vertex> vertices_data;
-    //size_t vertices_size = 0;
-    //size_t vertices_number = 0;
-    //AssimpMesh assimp_mesh(assimp_scene_ptr_, 0);
-    //assimp_mesh.GetVertexData(vertices_data, vertices_size, vertices_number);
   }
 
   return load_success;

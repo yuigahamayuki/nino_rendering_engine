@@ -4,6 +4,7 @@
 #include <string>
 
 #include "window.h"
+#include "renderer.h"
 
 namespace motion_animation {
 
@@ -20,7 +21,7 @@ public:
 
   void SetRendererToOpenGL();
 
-  // For real game engine: read the save data to decide which scene to load.
+  // Note(wushiyuan): For a real game engine: read the save data to decide which scene to load.
   void LoadScene();
 
   void Run();
@@ -29,9 +30,11 @@ private:
   uint32_t width_;
   uint32_t height_;
 
+  std::string current_scene_name_;
+
   std::unique_ptr<Window> window_ptr_;
 
-  std::string current_scene_name_;
+  std::unique_ptr<Renderer> renderer_ptr_;
 
 };  // class Engine
 

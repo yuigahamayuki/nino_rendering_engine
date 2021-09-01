@@ -1,27 +1,31 @@
 #include "scene.h"
 
 #include "model_importer.h"
+#include "assets.h"
 
 namespace motion_animation {
 
-void Scene::LoadSceneAssets() {
-  LoadModels();
+void Scene::LoadSceneAssets(Renderer* renderer) {
+  LoadModels(renderer);
   LoadCamera();
   LoadLights();
 }
 
-void Scene::LoadModels() {
-  // For a real game engine: read config file to determine which models are contained in the scene, then load the models.
+void Scene::LoadModels(Renderer* renderer) {
+  // Note(wushiyuan): For a real game engine: read config file to determine which models are contained in the scene, then load the models.
   {
     const std::string model_file_name("D:/game_assets/models/ruby-rose/source/rubyAnimated002.fbx");
     const std::string model_name("ruby");
+    std::vector<std::unique_ptr<assets::Assets>> assets;
+
     LoadSingleModel(model_file_name, model_name);
-    std::vector<Mesh::Vertex> model_all_meshes_vertices_data;
-    size_t model_all_meshes_vertices_size = 0;
-    size_t model_all_meshes_vertices_number = 0;
-    models_[model_name].GetAllMeshVertexData(model_all_meshes_vertices_data, model_all_meshes_vertices_size, model_all_meshes_vertices_number);
+    auto mesh_vertices = std::make_unique<assets::MeshVertices>();
+    models_[model_name].GetAllMeshVertexData(mesh_vertices->model_all_meshes_vertices_data_, mesh_vertices->model_all_meshes_vertices_size_, mesh_vertices->model_all_meshes_vertices_number_);
+    assets.emplace_back(std::move(mesh_vertices));
     
-    // TODO(wushiyuan): load vertices to gpu
+    if (renderer) {
+      renderer->LoadAssets(assets);
+    }
   }
 
 }

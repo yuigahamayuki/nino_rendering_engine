@@ -7,9 +7,9 @@ SceneManager& SceneManager::GetSharedInstance() {
   return scene_manager;
 }
 
-void SceneManager::AddScene(const std::string& scene_name) {
+void SceneManager::AddScene(const std::string& scene_name, Renderer* renderer) {
   scenes_.emplace(scene_name, Scene(scene_name));
-  scenes_[scene_name].LoadSceneAssets();
+  scenes_[scene_name].LoadSceneAssets(renderer);
 }
 
 }  // namespace motion_animation
