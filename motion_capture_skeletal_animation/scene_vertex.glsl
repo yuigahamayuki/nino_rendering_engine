@@ -9,6 +9,9 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+const int MAX_BONES = 512;
+uniform mat4 bone_transforms[MAX_BONES];
+
 void main()
 {
     gl_Position = projection * view * model * vec4(position, 1.0f);

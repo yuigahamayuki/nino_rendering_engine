@@ -25,6 +25,14 @@ public:
     std::cout << "count: " << count << std::endl;
   }
 
+  const std::string node_name() const {
+    return node_name_;
+  }
+
+  const Eigen::Matrix4f transform() const {
+    return transform_;
+  }
+
 public:
   std::weak_ptr<AnimationNode> parent_;
   std::vector<std::shared_ptr<AnimationNode>> children_;
@@ -41,6 +49,14 @@ public:
 
   }
 
+  const Eigen::Matrix4f offset_matrix() const {
+    return offset_matrix_;
+  }
+
+  void set_final_transform_matrix(const Eigen::Matrix4f& final_transform_matrix) {
+    final_transform_matrix_ = final_transform_matrix;
+  }
+
 private:
   std::string bone_name_;
   // Convert from model space to this bone's local space defined in bind pose.
@@ -55,16 +71,6 @@ private:
 
 class Animation {
 public:
-  Animation(const std::string& animation_name, double duration_in_ticks, double ticks_per_second) 
-    : animation_name_(animation_name), duration_in_ticks_(duration_in_ticks), ticks_per_second_(ticks_per_second) {
-
-  }
-
-  // void* is the array pointer, directly using memcpy to copy the members, so the definition of Key should be the same as assimp's.
-  void InsertOneChannelFromAssimp(const std::string& node_name, int scaling_keys_number, void* scaling_keys, int rotation_keys_number, void* rotation_keys, 
-    int translation_keys_number, void* translation_keys);
-
-private:
   struct ScalingKey {
     double key_frame_time_in_ticks_ = 0.0;
     float scale_x_ = 0.f;
@@ -91,6 +97,37 @@ private:
     std::vector<TranslationKey> translation_keys_;
   };
 
+  Animation(const std::string& animation_name, double duration_in_ticks, double ticks_per_second) 
+    : animation_name_(animation_name), duration_in_ticks_(duration_in_ticks), ticks_per_second_(ticks_per_second) {
+
+  }
+
+  // void* is the array pointer, directly using memcpy to copy the members, so the definition of Key should be the same as assimp's.
+  void InsertOneChannelFromAssimp(const std::string& node_name, int scaling_keys_number, void* scaling_keys, int rotation_keys_number, void* rotation_keys, 
+    int translation_keys_number, void* translation_keys);
+
+  double duration_in_ticks() const {
+    return duration_in_ticks_;
+  }
+
+  double ticks_per_second() const {
+    return ticks_per_second_;
+  }
+
+  const Channel* GetChannelForName(const std::string& node_name) const {
+    const Channel* channel_ptr = nullptr;
+    auto iter = std::find_if(channels_.cbegin(), channels_.cend(), [&node_name](const Channel& channel) {
+      return channel.node_name_ == node_name;
+    });
+    
+    if (iter != channels_.end()) {
+      channel_ptr = &(*iter);
+    }
+
+    return channel_ptr;
+  }
+
+private:
   std::string animation_name_;
 
   double duration_in_ticks_ = 0.0;

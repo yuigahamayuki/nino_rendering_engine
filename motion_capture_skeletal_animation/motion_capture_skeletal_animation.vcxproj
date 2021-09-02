@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="animation_manager.cpp" />
+    <ClCompile Include="animation_player.cpp" />
     <ClCompile Include="assimp_mesh.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="engine.cpp" />
@@ -159,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="animation.h" />
     <ClInclude Include="animation_manager.h" />
+    <ClInclude Include="animation_player.h" />
     <ClInclude Include="assimp_mesh.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="engine.h" />

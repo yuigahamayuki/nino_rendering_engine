@@ -44,6 +44,10 @@ inline Eigen::Matrix<T, 4, 4> MatrixAssimp2Eigen(const aiMatrix4x4t<T>& assimp_m
 	return eigen_matrix;
 }
 
+inline Eigen::Vector3f Lerp(const Eigen::Vector3f& start, const Eigen::Vector3f& end, float t) {
+	return start * (1 - t) + end * t;
+}
+
 }  // namespace util
 
 }  // namespace motion_animation

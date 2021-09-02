@@ -4,6 +4,7 @@
 
 #include "scene_manager.h"
 #include "util_linear_algebra_helper.h"
+#include "animation_player.h"
 
 namespace motion_animation {
 
@@ -41,9 +42,9 @@ void GLRenderer::Render() {
     auto scene_ptr = SceneManager::GetSharedInstance().GetCurrentScene();
     const Camera& camera = scene_ptr->GetCamera();
     Eigen::Matrix4f model;
-    model << 0.01, 0.f, 0.f, 0.f,
-      0.f, 0.01, 0.f, 0.f,
-      0.f, 0.f, 0.01, 0.f,
+    model << 0.01f, 0.f, 0.f, 0.f,
+      0.f, 0.01f, 0.f, 0.f,
+      0.f, 0.f, 0.01f, 0.f,
       0.f, 0.f, 0.f, 1.f;
 
     Eigen::Matrix4f view;
@@ -56,6 +57,19 @@ void GLRenderer::Render() {
     gl_shader_helper_ptr_->setMat4("model", glm_model);
     gl_shader_helper_ptr_->setMat4("view", glm_view);
     gl_shader_helper_ptr_->setMat4("projection", glm_proj);
+
+    // TODO(wushiyuan): draw each model
+
+    // TODO(wushiyuan): test, delete
+    std::vector<Eigen::Matrix4f> bone_transforms;
+    AnimationPlayer::GetSharedInstance().ComputeBoneTransforms(30.f,
+      bone_transforms,
+      AnimationManager::GetSharedInstance().GetBonesMapForModel("ruby"),
+      AnimationManager::GetSharedInstance().GetBonesInfoForModel("ruby"),
+      AnimationManager::GetSharedInstance().GetAnimationForModel("ruby", "Take 001"),
+      AnimationManager::GetSharedInstance().GetAnimationRootNodeForModel("ruby"));
+
+    // gl_shader_helper_ptr_->setMat4("")
 
     glBindVertexArray(VAO_);
     glDrawArrays(GL_TRIANGLES, 0, total_vertices_number_);

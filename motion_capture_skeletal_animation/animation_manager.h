@@ -19,6 +19,22 @@ class AnimationManager {
   AnimationManager(const AnimationManager&) = delete;
   AnimationManager& operator=(const AnimationManager&) = delete;
 
+  const AnimationManager::BonesMap& GetBonesMapForModel(const std::string& model_name) const {
+    return bones_of_all_models_.at(model_name);
+  }
+
+  std::vector<AnimationBone>& GetBonesInfoForModel(const std::string& model_name) {
+    return bones_info_of_all_models_.at(model_name);
+  }
+
+  const Animation& GetAnimationForModel(const std::string& model_name, const std::string& animation_name) const {
+    return animations_of_all_models_.at(model_name).at(animation_name);
+  }
+
+  const std::shared_ptr<AnimationNode> GetAnimationRootNodeForModel(const std::string& model_name) const {
+    return animation_nodes_of_all_models_.at(model_name);
+  }
+
   void MakeBonesMapForModel(const std::string& model_name);
   void MakeBonesInfoForModel(const std::string& model_name);
 
@@ -41,7 +57,7 @@ class AnimationManager {
   // Note(wushiyuan): may be the key should not be model_name, because animation may be shared between multiple models.
   std::map<std::string, AnimationsMap> animations_of_all_models_;  // key: model_name value: all the animations for the model of key
 
-  std::map<std::string, std::shared_ptr<AnimationNode>> animation_nodes_of_all_models_;  // key: model_name
+  std::map<std::string, std::shared_ptr<AnimationNode>> animation_nodes_of_all_models_;  // key: model_name value: root animation node
 };  // class AnimationManager
 
 }  // namespace motion_animation
