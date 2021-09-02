@@ -49,7 +49,6 @@ void GLWindow::Loop(Renderer* renderer) {
 
     // render
     // ------
-    // TODO(wushiyuan): use renderer to render
     renderer->Render();
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

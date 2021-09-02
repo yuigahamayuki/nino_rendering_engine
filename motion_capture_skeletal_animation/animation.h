@@ -2,21 +2,44 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+#include <iostream>
 
 #include <Eigen/Eigen>
 
 namespace motion_animation {
 
-// Note(wushiyuan): assimp node, including bones for animation
-class AnimationNode {
+// Note(wushiyuan): assimp node, including bones for animation and other nodes, e.g. a mesh, prerotation, etc.
+class AnimationNode : public std::enable_shared_from_this<AnimationNode> {
 public:
+  AnimationNode(const std::string& node_name, std::weak_ptr<AnimationNode> parent, const Eigen::Matrix4f& transform) : node_name_(node_name),
+    parent_(parent),
+    transform_(transform) {
+
+  }
+
+  ~AnimationNode() {
+    static int count = 0;
+    std::cout << node_name_ << " destroy!" << std::endl;
+    count++;
+    std::cout << "count: " << count << std::endl;
+  }
+
+public:
+  std::weak_ptr<AnimationNode> parent_;
+  std::vector<std::shared_ptr<AnimationNode>> children_;
 
 private:
-
+  std::string node_name_;
+  Eigen::Matrix4f transform_;
 };
 
 class AnimationBone {
 public:
+  AnimationBone(const std::string& bone_name, const Eigen::Matrix4f& offset_matrix) 
+    : bone_name_(bone_name), offset_matrix_(offset_matrix) {
+
+  }
 
 private:
   std::string bone_name_;

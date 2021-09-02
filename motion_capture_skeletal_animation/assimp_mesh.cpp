@@ -2,6 +2,8 @@
 
 #include "animation_manager.h"
 
+#include "util_linear_algebra_helper.h"
+
 namespace {
 
 void InsertBoneIdAndBoneWeightToVertexData(std::vector<motion_animation::Mesh::Vertex>& vertices_data, uint32_t vertex_index, int bone_index, float bone_weight) {
@@ -69,7 +71,14 @@ void AssimpMesh::GetVertexData(std::vector<Vertex>& vertices_data, size_t& verti
     for (uint32_t i = 0; i < mesh->mNumBones; ++i) {
       auto bone = mesh->mBones[i];
       const std::string bone_name = bone->mName.C_Str();
-      uint32_t bone_index = AnimationManager::GetSharedInstance().FindBoneIndexForNameOfModel("ruby", bone_name);
+      bool bone_is_exist = false;
+      // TODO(wushiyuan): remove hard coded "ruby"
+      uint32_t bone_index = AnimationManager::GetSharedInstance().FindBoneIndexForModel("ruby", bone_name, bone_is_exist);
+      if (!bone_is_exist) {
+        // TODO(wushiyuan): remove hard coded "ruby"
+        Eigen::Matrix4f offset_matrix = util::MatrixAssimp2Eigen(bone->mOffsetMatrix);
+        AnimationManager::GetSharedInstance().InsertBoneInfoForModel("ruby", AnimationBone(bone_name, offset_matrix));
+      }
       for (uint32_t j = 0; j < bone->mNumWeights; ++j) {
         auto vertex_id = bone->mWeights[j].mVertexId;
         auto bone_weight = bone->mWeights[j].mWeight;

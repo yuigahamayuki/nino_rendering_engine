@@ -6,6 +6,7 @@
 
 #include "assimp_mesh.h"
 #include "animation_manager.h"
+#include "util_linear_algebra_helper.h"
 
 namespace motion_animation {
 
@@ -39,11 +40,29 @@ bool ModelImporter::LoadModelFile(const std::string& model_file_path)
 void ModelImporter::LoadAllMeshesForModel(const std::string& model_name, std::vector<std::unique_ptr<Mesh>>& meshes) {
   if (assimp_scene_ptr_) {
     AnimationManager::GetSharedInstance().MakeBonesMapForModel(model_name);
+    AnimationManager::GetSharedInstance().MakeBonesInfoForModel(model_name);
     auto total_mesh_number = assimp_scene_ptr_->mNumMeshes;
     for (uint32_t i = 0; i < total_mesh_number; ++i) {
       meshes.emplace_back(std::make_unique<AssimpMesh>(assimp_scene_ptr_, i));
     }
   }
+}
+
+std::shared_ptr<AnimationNode> ConstructRootAnimationNodeFromAssimpNode(const aiScene* assimp_scene_ptr, aiNode* assimp_node, std::shared_ptr<AnimationNode> parent) {
+  if (assimp_node == nullptr)
+    return nullptr;
+
+  Eigen::Matrix4f transform = util::MatrixAssimp2Eigen(assimp_node->mTransformation);
+  std::shared_ptr<AnimationNode> node = std::make_shared<AnimationNode>(assimp_node->mName.C_Str(), parent, transform);
+  for (auto i = 0; i < assimp_node->mNumChildren; ++i) {
+    ConstructRootAnimationNodeFromAssimpNode(assimp_scene_ptr, assimp_node->mChildren[i], node->shared_from_this());
+  }
+
+  if (parent) {
+    parent->children_.emplace_back(node);
+  }
+
+  return node;
 }
 
 void ModelImporter::LoadAllAnimationsForModel(const std::string& model_name) {
@@ -64,7 +83,9 @@ void ModelImporter::LoadAllAnimationsForModel(const std::string& model_name) {
           assimp_scene_ptr_->mAnimations[i]->mChannels[j]->mNumPositionKeys,
           assimp_scene_ptr_->mAnimations[i]->mChannels[j]->mPositionKeys);
       }
-     
+
+      auto animation_root_node = ConstructRootAnimationNodeFromAssimpNode(assimp_scene_ptr_, assimp_scene_ptr_->mRootNode, nullptr);
+      AnimationManager::GetSharedInstance().InsertAnimationRootNodeForModel(model_name, animation_root_node);
 
       AnimationManager::GetSharedInstance().InsertAnimationForModel(model_name, animation_name, animation);
     }
