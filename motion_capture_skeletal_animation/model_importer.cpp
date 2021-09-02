@@ -43,7 +43,7 @@ void ModelImporter::LoadAllMeshesForModel(const std::string& model_name, std::ve
     AnimationManager::GetSharedInstance().MakeBonesInfoForModel(model_name);
     auto total_mesh_number = assimp_scene_ptr_->mNumMeshes;
     for (uint32_t i = 0; i < total_mesh_number; ++i) {
-      meshes.emplace_back(std::make_unique<AssimpMesh>(assimp_scene_ptr_, i));
+      meshes.emplace_back(std::make_unique<AssimpMesh>(assimp_scene_ptr_, i, model_name));
     }
   }
 }

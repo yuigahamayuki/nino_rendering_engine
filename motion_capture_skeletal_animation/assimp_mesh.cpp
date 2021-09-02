@@ -25,12 +25,13 @@ void InsertBoneIdAndBoneWeightToVertexData(std::vector<motion_animation::Mesh::V
 
 namespace motion_animation {
 
-AssimpMesh::AssimpMesh(const aiScene* assimp_scene_ptr, uint32_t mesh_index_of_assimp)
+AssimpMesh::AssimpMesh(const aiScene* assimp_scene_ptr, uint32_t mesh_index_of_assimp, const std::string& model_name)
   : assimp_scene_ptr_(assimp_scene_ptr), mesh_index_of_assimp_(mesh_index_of_assimp) {
 
   auto total_mesh_number = assimp_scene_ptr_->mNumMeshes;
   if (mesh_index_of_assimp_ < total_mesh_number) {
     SetMeshName(assimp_scene_ptr_->mMeshes[mesh_index_of_assimp_]->mName.C_Str());
+    SetModelName(model_name);
   }
 }
 
@@ -72,12 +73,10 @@ void AssimpMesh::GetVertexData(std::vector<Vertex>& vertices_data, size_t& verti
       auto bone = mesh->mBones[i];
       const std::string bone_name = bone->mName.C_Str();
       bool bone_is_exist = false;
-      // TODO(wushiyuan): remove hard coded "ruby"
-      uint32_t bone_index = AnimationManager::GetSharedInstance().FindBoneIndexForModel("ruby", bone_name, bone_is_exist);
+      uint32_t bone_index = AnimationManager::GetSharedInstance().FindBoneIndexForModel(GetModelName(), bone_name, bone_is_exist);
       if (!bone_is_exist) {
-        // TODO(wushiyuan): remove hard coded "ruby"
         Eigen::Matrix4f offset_matrix = util::MatrixAssimp2Eigen(bone->mOffsetMatrix);
-        AnimationManager::GetSharedInstance().InsertBoneInfoForModel("ruby", AnimationBone(bone_name, offset_matrix));
+        AnimationManager::GetSharedInstance().InsertBoneInfoForModel(GetModelName(), AnimationBone(bone_name, offset_matrix));
       }
       for (uint32_t j = 0; j < bone->mNumWeights; ++j) {
         auto vertex_id = bone->mWeights[j].mVertexId;

@@ -8,7 +8,7 @@ namespace motion_animation {
 
 class AssimpMesh : public Mesh {
  public:
-  AssimpMesh(const aiScene* assimp_scene_ptr, uint32_t mesh_index_of_assimp);
+  AssimpMesh(const aiScene* assimp_scene_ptr, uint32_t mesh_index_of_assimp, const std::string& model_name);
   ~AssimpMesh() = default;
 
   // Note(wushiyuan): AssimpMesh does not own assimp_scene_ptr_,

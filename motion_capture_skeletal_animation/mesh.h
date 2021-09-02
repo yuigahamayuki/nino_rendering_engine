@@ -41,6 +41,10 @@ class Mesh {
     return vertices_number_;
   }
 
+  const std::string GetModelName() const {
+    return model_name_;
+  }
+
   void SetMeshName(const std::string& mesh_name) {
     mesh_name_ = mesh_name;
   }
@@ -57,6 +61,10 @@ class Mesh {
     vertices_number_ = vertices_number;
   }
 
+  void SetModelName(const std::string& model_name) {
+    model_name_ = model_name;
+  }
+
   virtual void GetVertexData(std::vector<Vertex>& vertices_data, size_t& vertices_size, size_t& vertices_number) = 0;
   //virtual void GetIndexData(std::vector<uint32_t>& indices_data, )
 
@@ -67,6 +75,8 @@ class Mesh {
   size_t vertices_size_ = 0;
   size_t vertices_number_ = 0;
 
+  // The name of model which this mesh belongs to
+  std::string model_name_;
 };  // class Mesh
 
 }  // namespace motion_animation
