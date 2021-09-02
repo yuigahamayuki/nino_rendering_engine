@@ -28,4 +28,9 @@ uint32_t AnimationManager::FindBoneIndexForNameOfModel(const std::string& model_
   return bone_index;
 }
 
+void AnimationManager::InsertAnimationForModel(const std::string& model_name, const std::string& animation_name, const Animation & animation) {
+  animations_of_all_models_.insert({ model_name, AnimationsMap() });
+  animations_of_all_models_[model_name].insert({ animation_name, animation });
+}
+
 }  // namespace motion_animation

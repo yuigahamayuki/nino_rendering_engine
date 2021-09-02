@@ -48,10 +48,26 @@ void ModelImporter::LoadAllMeshesForModel(const std::string& model_name, std::ve
 
 void ModelImporter::LoadAllAnimationsForModel(const std::string& model_name) {
   if (assimp_scene_ptr_) {
-    // TODO(wushiyuan): test, delete
     auto animation_number = assimp_scene_ptr_->mNumAnimations;
-    auto foo = assimp_scene_ptr_->mAnimations[0];
-    int a = 1;
+    for (uint32_t i = 0; i < animation_number; ++i) {
+      std::string animation_name(assimp_scene_ptr_->mAnimations[i]->mName.C_Str());
+      double duration_in_ticks = assimp_scene_ptr_->mAnimations[i]->mDuration;
+      double ticks_per_second = assimp_scene_ptr_->mAnimations[i]->mTicksPerSecond;
+
+      Animation animation(animation_name, duration_in_ticks, ticks_per_second);
+      for (uint32_t j = 0; j < assimp_scene_ptr_->mAnimations[i]->mNumChannels; ++j) {
+        animation.InsertOneChannelFromAssimp(assimp_scene_ptr_->mAnimations[i]->mChannels[j]->mNodeName.C_Str(),
+          assimp_scene_ptr_->mAnimations[i]->mChannels[j]->mNumScalingKeys,
+          assimp_scene_ptr_->mAnimations[i]->mChannels[j]->mScalingKeys,
+          assimp_scene_ptr_->mAnimations[i]->mChannels[j]->mNumRotationKeys,
+          assimp_scene_ptr_->mAnimations[i]->mChannels[j]->mRotationKeys,
+          assimp_scene_ptr_->mAnimations[i]->mChannels[j]->mNumPositionKeys,
+          assimp_scene_ptr_->mAnimations[i]->mChannels[j]->mPositionKeys);
+      }
+     
+
+      AnimationManager::GetSharedInstance().InsertAnimationForModel(model_name, animation_name, animation);
+    }
   }
 }
 
