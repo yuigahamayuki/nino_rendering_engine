@@ -45,6 +45,7 @@ void Scene::LoadSingleModel(const std::string& model_file_name, const std::strin
   if (ModelImporter::GetSharedInstance().LoadModelFile(model_file_name)) {
     models_.emplace(model_name, Model(model_name));
     models_[model_name].LoadMeshes();
+    models_[model_name].LoadAnimations();
   }
 }
 

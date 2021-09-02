@@ -21,4 +21,8 @@ void Model::GetAllMeshVertexData(std::vector<Mesh::Vertex>& all_meshes_vertices_
   });
 }
 
+void Model::LoadAnimations() {
+  ModelImporter::GetSharedInstance().LoadAllAnimationsForModel(model_name_);
+}
+
 }  // namespace motion_animation

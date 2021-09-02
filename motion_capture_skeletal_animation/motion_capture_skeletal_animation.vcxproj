@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="animation.cpp" />
     <ClCompile Include="animation_manager.cpp" />
     <ClCompile Include="assimp_mesh.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="scene_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="animation.h" />
     <ClInclude Include="animation_manager.h" />
     <ClInclude Include="assimp_mesh.h" />
     <ClInclude Include="camera.h" />

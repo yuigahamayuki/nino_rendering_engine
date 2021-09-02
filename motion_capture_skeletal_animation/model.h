@@ -26,6 +26,8 @@ class Model {
 
   void GetAllMeshVertexData(std::vector<Mesh::Vertex>& all_meshes_vertices_data, size_t& all_meshes_vertices_size, size_t& all_meshes_vertices_number);
 
+  void LoadAnimations();
+
  private:
   std::string model_name_;
 

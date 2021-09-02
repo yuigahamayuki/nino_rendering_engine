@@ -46,4 +46,13 @@ void ModelImporter::LoadAllMeshesForModel(const std::string& model_name, std::ve
   }
 }
 
+void ModelImporter::LoadAllAnimationsForModel(const std::string& model_name) {
+  if (assimp_scene_ptr_) {
+    // TODO(wushiyuan): test, delete
+    auto animation_number = assimp_scene_ptr_->mNumAnimations;
+    auto foo = assimp_scene_ptr_->mAnimations[0];
+    int a = 1;
+  }
+}
+
 }  // namespace motion_animation

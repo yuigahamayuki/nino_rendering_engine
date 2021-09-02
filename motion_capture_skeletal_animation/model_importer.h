@@ -22,6 +22,7 @@ class ModelImporter {
 
    bool LoadModelFile(const std::string& model_file_path);
    void LoadAllMeshesForModel(const std::string& model_name, std::vector<std::unique_ptr<Mesh>>& meshes);
+   void LoadAllAnimationsForModel(const std::string& model_name);
  private:
    ModelImporter();
 
