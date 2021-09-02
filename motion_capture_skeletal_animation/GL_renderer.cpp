@@ -104,6 +104,7 @@ void GLRenderer::LoadVertices(const assets::MeshVertices* mesh_vertices) {
   glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, attribute_stride, (void*)attribute_offset);
   glEnableVertexAttribArray(4);
 
+  // TODO(wushiyuan): use member variable stored in model to determine draw number
   total_vertices_number_ = mesh_vertices->model_all_meshes_vertices_number_;
 }
 

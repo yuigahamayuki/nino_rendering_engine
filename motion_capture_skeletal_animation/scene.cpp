@@ -21,6 +21,7 @@ void Scene::LoadModels(Renderer* renderer) {
     LoadSingleModel(model_file_name, model_name);
     auto mesh_vertices = std::make_unique<assets::MeshVertices>();
     models_[model_name].GetAllMeshVertexData(mesh_vertices->model_all_meshes_vertices_data_, mesh_vertices->model_all_meshes_vertices_size_, mesh_vertices->model_all_meshes_vertices_number_);
+    models_[model_name].SetTotalVerticesNumberForAllMeshes(mesh_vertices->model_all_meshes_vertices_number_);
     assets.emplace_back(std::move(mesh_vertices));
     
     if (renderer) {
