@@ -40,7 +40,12 @@ void GLRenderer::Render() {
     // TODO(wushiyuan): implement more
     auto scene_ptr = SceneManager::GetSharedInstance().GetCurrentScene();
     const Camera& camera = scene_ptr->GetCamera();
-    Eigen::Matrix4f model = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f model;
+    model << 0.01, 0.f, 0.f, 0.f,
+      0.f, 0.01, 0.f, 0.f,
+      0.f, 0.f, 0.01, 0.f,
+      0.f, 0.f, 0.f, 1.f;
+
     Eigen::Matrix4f view;
     Eigen::Matrix4f proj;
     camera.GetViewProjMatrices(view, proj, 90.f, 1920, 1080, 1.f, 10.f);

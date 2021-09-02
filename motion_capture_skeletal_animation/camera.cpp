@@ -31,7 +31,7 @@ Eigen::Matrix4f Camera::ComputePerspectiveMatrixFovRH_OpenGLNDC(float fov_in_rad
   perspective_projection_matrix << c / aspect_ratio, 0.f, 0.f, 0.f,
     0.f, c, 0.f, 0.f,
     0.f, 0.f, A, B,
-    0.f, 0.f, 1.f, 0.f;
+    0.f, 0.f, -1.f, 0.f;
 
   return perspective_projection_matrix;
 }
