@@ -30,9 +30,14 @@ class Model {
     total_vertices_number_for_all_meshes_ = total_vertices_number_for_all_meshes;
   }
 
+  void SetTotalIndicesNumberForAllMeshes(size_t total_indices_number_for_all_meshes) {
+    total_indices_number_for_all_meshes_ = total_indices_number_for_all_meshes;
+  }
+
   void LoadMeshes();
 
-  void GetAllMeshVertexData(std::vector<Mesh::Vertex>& all_meshes_vertices_data, size_t& all_meshes_vertices_size, size_t& all_meshes_vertices_number);
+  void GetAllMeshesVertexAndIndexData(std::vector<Mesh::Vertex>& all_meshes_vertices_data, size_t& all_meshes_vertices_size, size_t& all_meshes_vertices_number,
+    std::vector<uint32_t>& all_meshes_indices_data, size_t& all_meshes_indices_size, size_t& all_meshes_indices_number);
 
   void LoadAnimations();
 
@@ -42,6 +47,7 @@ class Model {
   std::vector<std::unique_ptr<Mesh>> meshes_;
 
   size_t total_vertices_number_for_all_meshes_ = 0;
+  size_t total_indices_number_for_all_meshes_ = 0;
 };  // class Model
 
 }  // namespace motion_animation

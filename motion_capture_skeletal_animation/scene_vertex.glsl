@@ -12,8 +12,9 @@ uniform mat4 bone_transforms[170];
 
 void main()
 {
-    mat4 bone_transform = bone_transforms[bone_ids[0]];
+    // mat4 bone_transform = bone_transforms[bone_ids[0]];
 
 
-    gl_Position = projection * view * model * bone_transform * vec4(position, 1.0f);
+    // gl_Position = projection * view * model * bone_transform * vec4(position, 1.0f);
+    gl_Position = projection * view * model *  vec4(position, 1.0f);
 }

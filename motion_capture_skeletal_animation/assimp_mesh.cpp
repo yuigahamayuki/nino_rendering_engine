@@ -90,4 +90,26 @@ void AssimpMesh::GetVertexData(std::vector<Vertex>& vertices_data, size_t& verti
 
 }
 
+void AssimpMesh::GetIndexData(std::vector<uint32_t>& indices_data, size_t& indices_size, size_t& indices_number) {
+  indices_data.clear();
+  indices_size = 0;
+  indices_number = 0;
+  if (!assimp_scene_ptr_) {
+    return;
+  }
+
+  auto total_mesh_number = assimp_scene_ptr_->mNumMeshes;
+  if (mesh_index_of_assimp_ < total_mesh_number) {
+    auto mesh = assimp_scene_ptr_->mMeshes[mesh_index_of_assimp_];
+    for (uint32_t i = 0; i < mesh->mNumFaces; ++i) {
+      auto face = mesh->mFaces[i];
+      indices_size += Mesh::GetSingleIndexSize() * face.mNumIndices;
+      indices_number += face.mNumIndices;
+      for (uint32_t j = 0; j < face.mNumIndices; ++j) {
+        indices_data.emplace_back(face.mIndices[j]);
+      }
+    }
+  }
+}
+
 }  // namespace motion_animation

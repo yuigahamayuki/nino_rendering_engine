@@ -14,14 +14,17 @@ void Scene::LoadSceneAssets(Renderer* renderer) {
 void Scene::LoadModels(Renderer* renderer) {
   // Note(wushiyuan): For a real game engine: read config file to determine which models are contained in the scene, then load the models.
   {
-    const std::string model_file_name("D:/game_assets/models/ruby-rose/source/rubyAnimated002.fbx");
+    // const std::string model_file_name("D:/game_assets/models/ruby-rose/source/rubyAnimated002.fbx");
+    const std::string model_file_name("D:/game_assets/models/blender_test_animation/blender_test_animation_rotate.fbx");
     const std::string model_name("ruby");
     std::vector<std::unique_ptr<assets::Asset>> assets;
 
     LoadSingleModel(model_file_name, model_name);
     auto mesh_vertices = std::make_unique<assets::MeshVertices>();
-    models_[model_name].GetAllMeshVertexData(mesh_vertices->model_all_meshes_vertices_data_, mesh_vertices->model_all_meshes_vertices_size_, mesh_vertices->model_all_meshes_vertices_number_);
+    models_[model_name].GetAllMeshesVertexAndIndexData(mesh_vertices->model_all_meshes_vertices_data_, mesh_vertices->model_all_meshes_vertices_size_, mesh_vertices->model_all_meshes_vertices_number_,
+      mesh_vertices->model_all_meshes_indices_data_, mesh_vertices->model_all_meshes_indices_size_, mesh_vertices->model_all_meshes_indices_number_);
     models_[model_name].SetTotalVerticesNumberForAllMeshes(mesh_vertices->model_all_meshes_vertices_number_);
+    models_[model_name].SetTotalIndicesNumberForAllMeshes(mesh_vertices->model_all_meshes_indices_number_);
     assets.emplace_back(std::move(mesh_vertices));
     
     if (renderer) {

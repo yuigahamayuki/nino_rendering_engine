@@ -32,6 +32,10 @@ struct MeshVertices : public Asset {
   std::vector<Mesh::Vertex> model_all_meshes_vertices_data_;
   size_t model_all_meshes_vertices_size_ = 0;
   size_t model_all_meshes_vertices_number_ = 0;
+
+  std::vector<uint32_t> model_all_meshes_indices_data_;
+  size_t model_all_meshes_indices_size_ = 0;
+  size_t model_all_meshes_indices_number_ = 0;
 };  // struct MeshVertices
 
 }  // namespace assets

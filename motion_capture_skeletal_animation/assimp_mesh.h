@@ -16,6 +16,8 @@ class AssimpMesh : public Mesh {
   // then AssimpMesh::GetVertexData should not be called because AssimpMesh::assimp_scene_ptr_ becomes invalid
   void GetVertexData(std::vector<Vertex>& vertices_data, size_t& vertices_size, size_t& vertices_number) override;
 
+  void GetIndexData(std::vector<uint32_t>& indices_data, size_t& indices_size, size_t& indices_number) override;
+
  private:
   const aiScene* assimp_scene_ptr_ = nullptr;
   uint32_t mesh_index_of_assimp_ = 0;

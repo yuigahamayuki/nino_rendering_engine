@@ -22,6 +22,10 @@ class Mesh {
     return sizeof(Vertex);
   }
 
+  static size_t GetSingleIndexSize() {
+    return sizeof(uint32_t);
+  }
+
   Mesh() = default;
   virtual ~Mesh() = default;
 
@@ -39,6 +43,14 @@ class Mesh {
 
   const size_t GetVerticesNumber() const {
     return vertices_number_;
+  }
+
+  const size_t GetIndicesSize() const {
+    return indices_size_;
+  }
+
+  const size_t GetIndicesNumber() const {
+    return indices_number_;
   }
 
   const std::string GetModelName() const {
@@ -61,12 +73,20 @@ class Mesh {
     vertices_number_ = vertices_number;
   }
 
+  void SetIndicesSize(size_t indices_size) {
+    indices_size_ = indices_size;
+  }
+
+  void SetIndicesNumber(size_t indices_number) {
+    indices_number_ = indices_number;
+  }
+
   void SetModelName(const std::string& model_name) {
     model_name_ = model_name;
   }
 
   virtual void GetVertexData(std::vector<Vertex>& vertices_data, size_t& vertices_size, size_t& vertices_number) = 0;
-  //virtual void GetIndexData(std::vector<uint32_t>& indices_data, )
+  virtual void GetIndexData(std::vector<uint32_t>& indices_data, size_t& indices_size, size_t& indices_number) = 0;
 
  private:
   std::string mesh_name_;
@@ -74,6 +94,9 @@ class Mesh {
 
   size_t vertices_size_ = 0;
   size_t vertices_number_ = 0;
+
+  size_t indices_size_ = 0;
+  size_t indices_number_ = 0;
 
   // The name of model which this mesh belongs to
   std::string model_name_;

@@ -25,6 +25,7 @@ void GLRenderer::Initialize() {
 
   glGenVertexArrays(1, &VAO_);
   glGenBuffers(1, &VBO_);
+  glGenBuffers(1, &EBO_);
 }
 
 void GLRenderer::Destroy() {
@@ -41,11 +42,11 @@ void GLRenderer::Render() {
     // TODO(wushiyuan): implement more
     auto scene_ptr = SceneManager::GetSharedInstance().GetCurrentScene();
     const Camera& camera = scene_ptr->GetCamera();
-    Eigen::Matrix4f model;
-    model << 0.01f, 0.f, 0.f, 0.f,
-      0.f, 0.01f, 0.f, 0.f,
-      0.f, 0.f, 0.01f, 0.f,
-      0.f, 0.f, 0.f, 1.f;
+    Eigen::Matrix4f model(Eigen::Matrix4f::Identity());
+    //model << 0.01f, 0.f, 0.f, 0.f,
+    //  0.f, 0.01f, 0.f, 0.f,
+    //  0.f, 0.f, 0.01f, 0.f,
+    //  0.f, 0.f, 0.f, 1.f;
 
     Eigen::Matrix4f view;
     Eigen::Matrix4f proj;
@@ -65,22 +66,25 @@ void GLRenderer::Render() {
     // TODO(wushiyuan): draw each model
 
     // TODO(wushiyuan): test, delete
-    std::vector<Eigen::Matrix4f> bone_transforms;
-    AnimationPlayer::GetSharedInstance().ComputeBoneTransforms(30.f,
-      bone_transforms,
-      AnimationManager::GetSharedInstance().GetBonesMapForModel("ruby"),
-      AnimationManager::GetSharedInstance().GetBonesInfoForModel("ruby"),
-      AnimationManager::GetSharedInstance().GetAnimationForModel("ruby", "Take 001"),
-      AnimationManager::GetSharedInstance().GetAnimationRootNodeForModel("ruby"));
+    //std::vector<Eigen::Matrix4f> bone_transforms;
+    //AnimationPlayer::GetSharedInstance().ComputeBoneTransforms(0.f,
+    //  bone_transforms,
+    //  AnimationManager::GetSharedInstance().GetBonesMapForModel("ruby"),
+    //  AnimationManager::GetSharedInstance().GetBonesInfoForModel("ruby"),
+    //  AnimationManager::GetSharedInstance().GetAnimationForModel("ruby", "Armature|ArmatureAction.001"),
+    //  AnimationManager::GetSharedInstance().GetAnimationRootNodeForModel("ruby"));
 
-    for (size_t i = 0; i < bone_transforms.size(); ++i) {
-      const std::string uniform_name = std::string("bone_transforms") + "[" + std::to_string(i) + "]";
-      gl_shader_helper_ptr_->SetEigenMat4(uniform_name, bone_transforms[i]);
-    }
+    //for (size_t i = 0; i < bone_transforms.size(); ++i) {
+    //  const std::string uniform_name = std::string("bone_transforms") + "[" + std::to_string(i) + "]";
+    //  gl_shader_helper_ptr_->SetEigenMat4(uniform_name, bone_transforms[i]);
+    //}
 
 
-    glBindVertexArray(VAO_);
-    glDrawArrays(GL_TRIANGLES, 0, total_vertices_number_);
+    // glBindVertexArray(VAO_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
+    // glDrawArrays(GL_TRIANGLES, 0, total_vertices_number_);
+    // TODO(wushiyuan): get draw number from Model object
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   }
 }
 
@@ -128,6 +132,9 @@ void GLRenderer::LoadVertices(const assets::MeshVertices* mesh_vertices) {
 
   // TODO(wushiyuan): use member variable stored in model to determine draw number
   total_vertices_number_ = mesh_vertices->model_all_meshes_vertices_number_;
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh_vertices->model_all_meshes_indices_size_, mesh_vertices->model_all_meshes_indices_data_.data(), GL_STATIC_DRAW);
 }
 
 
