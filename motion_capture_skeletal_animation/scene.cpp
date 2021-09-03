@@ -16,7 +16,7 @@ void Scene::LoadModels(Renderer* renderer) {
   {
     const std::string model_file_name("D:/game_assets/models/ruby-rose/source/rubyAnimated002.fbx");
     const std::string model_name("ruby");
-    std::vector<std::unique_ptr<assets::Assets>> assets;
+    std::vector<std::unique_ptr<assets::Asset>> assets;
 
     LoadSingleModel(model_file_name, model_name);
     auto mesh_vertices = std::make_unique<assets::MeshVertices>();

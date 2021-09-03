@@ -18,7 +18,7 @@ class Renderer {
   virtual void Initialize() = 0;
   virtual void Destroy() = 0;
   virtual void Render() = 0;
-  virtual void LoadAssets(const std::vector<std::unique_ptr<assets::Assets>>& assets) = 0;
+  virtual void LoadAssets(const std::vector<std::unique_ptr<assets::Asset>>& assets) = 0;
 
  private:
 

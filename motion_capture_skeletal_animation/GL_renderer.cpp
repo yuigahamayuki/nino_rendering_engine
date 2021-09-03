@@ -84,8 +84,8 @@ void GLRenderer::Render() {
   }
 }
 
-void GLRenderer::LoadAssets(const std::vector<std::unique_ptr<assets::Assets>>& assets) {
-  std::for_each(assets.cbegin(), assets.cend(), [this](const std::unique_ptr<assets::Assets>& asset) {
+void GLRenderer::LoadAssets(const std::vector<std::unique_ptr<assets::Asset>>& assets) {
+  std::for_each(assets.cbegin(), assets.cend(), [this](const std::unique_ptr<assets::Asset>& asset) {
     switch (asset->asset_type()) {
       case assets::AssetType::vertex: {
         assets::MeshVertices* mesh_vertices = reinterpret_cast<assets::MeshVertices*>(asset.get());

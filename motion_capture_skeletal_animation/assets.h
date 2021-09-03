@@ -12,9 +12,9 @@ enum class AssetType {
   texture
 };  // enum class AssetType
 
-struct Assets {
-  Assets() = default;
-  virtual ~Assets() = default;
+struct Asset {
+  Asset() = default;
+  virtual ~Asset() = default;
 
   AssetType asset_type() const {
     return asset_type_;
@@ -24,7 +24,7 @@ struct Assets {
   AssetType asset_type_ = AssetType::unknown;
 };  // class Assets
 
-struct MeshVertices : public Assets {
+struct MeshVertices : public Asset {
   MeshVertices() {
     asset_type_ = AssetType::vertex;
   }

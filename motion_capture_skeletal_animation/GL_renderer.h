@@ -20,7 +20,7 @@ public:
   void Initialize() override;
   void Destroy() override;
   void Render() override;
-  void LoadAssets(const std::vector<std::unique_ptr<assets::Assets>>& assets) override;
+  void LoadAssets(const std::vector<std::unique_ptr<assets::Asset>>& assets) override;
 
 private:
   void LoadVertices(const assets::MeshVertices* mesh_vertices);
