@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 texture_coord;
@@ -8,11 +8,12 @@ layout (location = 4) in vec4 bone_weights;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-
-const int MAX_BONES = 512;
-uniform mat4 bone_transforms[MAX_BONES];
+uniform mat4 bone_transforms[170];
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0f);
+    mat4 bone_transform = bone_transforms[bone_ids[0]];
+
+
+    gl_Position = projection * view * model * bone_transform * vec4(position, 1.0f);
 }

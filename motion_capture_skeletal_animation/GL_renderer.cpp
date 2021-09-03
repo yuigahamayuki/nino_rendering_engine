@@ -54,9 +54,13 @@ void GLRenderer::Render() {
     glm::mat4 glm_model = util::MatrixEigen2GLM(model);
     glm::mat4 glm_view = util::MatrixEigen2GLM(view);
     glm::mat4 glm_proj = util::MatrixEigen2GLM(proj);
-    gl_shader_helper_ptr_->setMat4("model", glm_model);
-    gl_shader_helper_ptr_->setMat4("view", glm_view);
-    gl_shader_helper_ptr_->setMat4("projection", glm_proj);
+    //gl_shader_helper_ptr_->setMat4("model", glm_model);
+    //gl_shader_helper_ptr_->setMat4("view", glm_view);
+    //gl_shader_helper_ptr_->setMat4("projection", glm_proj);
+
+    gl_shader_helper_ptr_->SetEigenMat4("model", model);
+    gl_shader_helper_ptr_->SetEigenMat4("view", view);
+    gl_shader_helper_ptr_->SetEigenMat4("projection", proj);
 
     // TODO(wushiyuan): draw each model
 
@@ -69,7 +73,11 @@ void GLRenderer::Render() {
       AnimationManager::GetSharedInstance().GetAnimationForModel("ruby", "Take 001"),
       AnimationManager::GetSharedInstance().GetAnimationRootNodeForModel("ruby"));
 
-    // gl_shader_helper_ptr_->setMat4("")
+    for (size_t i = 0; i < bone_transforms.size(); ++i) {
+      const std::string uniform_name = std::string("bone_transforms") + "[" + std::to_string(i) + "]";
+      gl_shader_helper_ptr_->SetEigenMat4(uniform_name, bone_transforms[i]);
+    }
+
 
     glBindVertexArray(VAO_);
     glDrawArrays(GL_TRIANGLES, 0, total_vertices_number_);

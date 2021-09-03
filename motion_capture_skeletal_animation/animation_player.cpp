@@ -40,7 +40,7 @@ void AnimationPlayer::ReadAnimationNodeHeirarchy(double time_in_ticks, std::vect
   if (bones_map.find(current_process_node_name) != bones_map.end()) {
     uint32_t bone_index = bones_map.at(current_process_node_name);
     // TODO(wushiyuan): store global_inv in Animation object, then multiply it.
-    const Eigen::Matrix4f final_transform = current_process_node_global_transform * bones_info[bone_index].offset_matrix();
+    const Eigen::Matrix4f final_transform = animation.global_inverse_transform() * current_process_node_global_transform * bones_info[bone_index].offset_matrix();
     bone_transforms[bone_index] = final_transform;
     bones_info[bone_index].set_final_transform_matrix(final_transform);
   }

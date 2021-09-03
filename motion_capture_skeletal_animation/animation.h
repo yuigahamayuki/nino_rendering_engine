@@ -97,8 +97,9 @@ public:
     std::vector<TranslationKey> translation_keys_;
   };
 
-  Animation(const std::string& animation_name, double duration_in_ticks, double ticks_per_second) 
-    : animation_name_(animation_name), duration_in_ticks_(duration_in_ticks), ticks_per_second_(ticks_per_second) {
+  Animation(const std::string& animation_name, double duration_in_ticks, double ticks_per_second, const Eigen::Matrix4f& global_inverse_transform)
+    : animation_name_(animation_name), duration_in_ticks_(duration_in_ticks), ticks_per_second_(ticks_per_second),
+      global_inverse_transform_(global_inverse_transform) {
 
   }
 
@@ -112,6 +113,10 @@ public:
 
   double ticks_per_second() const {
     return ticks_per_second_;
+  }
+
+  const Eigen::Matrix4f global_inverse_transform() const {
+    return global_inverse_transform_;
   }
 
   const Channel* GetChannelForName(const std::string& node_name) const {
@@ -134,6 +139,8 @@ private:
   double ticks_per_second_ = 0.0;
 
   std::vector<Channel> channels_;
+
+  Eigen::Matrix4f global_inverse_transform_;
 };
 
 
