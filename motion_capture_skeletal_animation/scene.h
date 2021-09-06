@@ -30,6 +30,8 @@ class Scene {
     return camera_;
   }
 
+  void GetAllModelsDrawArguments(std::vector<Mesh::DrawArugument>& all_models_draw_arguments) const;
+
  private:
    void LoadModels(Renderer* renderer);
    void LoadCamera();
@@ -39,7 +41,7 @@ class Scene {
 
   std::string scene_name_;
 
-  std::map<std::string, Model> models_;  // key: model_name value: Model object
+  std::vector<Model> models_;
   Camera camera_;
 };  // class Scene
 

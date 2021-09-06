@@ -41,12 +41,16 @@ void GLRenderer::Render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // TODO(wushiyuan): implement more
     auto scene_ptr = SceneManager::GetSharedInstance().GetCurrentScene();
+    if (!scene_ptr) {
+      return;
+    }
     const Camera& camera = scene_ptr->GetCamera();
-    Eigen::Matrix4f model(Eigen::Matrix4f::Identity());
-    //model << 0.01f, 0.f, 0.f, 0.f,
-    //  0.f, 0.01f, 0.f, 0.f,
-    //  0.f, 0.f, 0.01f, 0.f,
-    //  0.f, 0.f, 0.f, 1.f;
+    // Eigen::Matrix4f model(Eigen::Matrix4f::Identity());
+    Eigen::Matrix4f model;
+    model << 0.01f, 0.f, 0.f, 0.f,
+      0.f, 0.01f, 0.f, 0.f,
+      0.f, 0.f, 0.01f, 0.f,
+      0.f, 0.f, 0.f, 1.f;
 
     Eigen::Matrix4f view;
     Eigen::Matrix4f proj;
@@ -66,12 +70,18 @@ void GLRenderer::Render() {
     // TODO(wushiyuan): draw each model
 
     // TODO(wushiyuan): test, delete
-    //std::vector<Eigen::Matrix4f> bone_transforms;
-    //AnimationPlayer::GetSharedInstance().ComputeBoneTransforms(0.f,
+    std::vector<Eigen::Matrix4f> bone_transforms;
+    static float time_in_seconds = 0.f;
+    time_in_seconds += 1.f;
+    // if (time_in_seconds > 34.7f) {
+    if (time_in_seconds > 133.f) {
+      time_in_seconds = 0.f;
+    }
+    //AnimationPlayer::GetSharedInstance().ComputeBoneTransforms(time_in_seconds,
     //  bone_transforms,
     //  AnimationManager::GetSharedInstance().GetBonesMapForModel("ruby"),
     //  AnimationManager::GetSharedInstance().GetBonesInfoForModel("ruby"),
-    //  AnimationManager::GetSharedInstance().GetAnimationForModel("ruby", "Armature|ArmatureAction.001"),
+    //  AnimationManager::GetSharedInstance().GetAnimationForModel("ruby", "Armature|Armature|Take 001|BaseLayer"),
     //  AnimationManager::GetSharedInstance().GetAnimationRootNodeForModel("ruby"));
 
     //for (size_t i = 0; i < bone_transforms.size(); ++i) {
@@ -79,12 +89,20 @@ void GLRenderer::Render() {
     //  gl_shader_helper_ptr_->SetEigenMat4(uniform_name, bone_transforms[i]);
     //}
 
-
-    // glBindVertexArray(VAO_);
+    glBindVertexArray(VAO_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
-    // glDrawArrays(GL_TRIANGLES, 0, total_vertices_number_);
-    // TODO(wushiyuan): get draw number from Model object
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    std::vector<Mesh::DrawArugument> all_models_draw_arguments;
+    scene_ptr->GetAllModelsDrawArguments(all_models_draw_arguments);
+    std::for_each(all_models_draw_arguments.cbegin(), all_models_draw_arguments.cend(), [this](const Mesh::DrawArugument& draw_argument) {
+      // glDrawArrays(GL_TRIANGLES, draw_argument.vertex_base_, draw_argument.vertex_count_);
+      glDrawElements(GL_TRIANGLES, draw_argument.index_count_, GL_UNSIGNED_INT,  reinterpret_cast<const void*>(draw_argument.index_start_));
+    });
+
+    //glBindVertexArray(VAO_);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
+    //// glDrawArrays(GL_TRIANGLES, 0, total_vertices_number_);
+    //// TODO(wushiyuan): get draw number from Model object
+    //glDrawElements(GL_TRIANGLES, 189606, GL_UNSIGNED_INT, 0);
   }
 }
 

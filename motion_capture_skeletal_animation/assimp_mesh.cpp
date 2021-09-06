@@ -109,6 +109,9 @@ void AssimpMesh::GetIndexData(std::vector<uint32_t>& indices_data, size_t& indic
         indices_data.emplace_back(face.mIndices[j]);
       }
     }
+
+    SetIndicesSize(indices_size);
+    SetIndicesNumber(indices_number);
   }
 }
 

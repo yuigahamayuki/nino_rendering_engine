@@ -41,6 +41,8 @@ class Model {
 
   void LoadAnimations();
 
+  void GetAllMeshesDrawArguments(std::vector<Mesh::DrawArugument>& draw_arguments) const;
+
  private:
   std::string model_name_;
 

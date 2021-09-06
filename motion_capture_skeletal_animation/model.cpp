@@ -38,4 +38,31 @@ void Model::LoadAnimations() {
   ModelImporter::GetSharedInstance().LoadAllAnimationsForModel(model_name_);
 }
 
+void Model::GetAllMeshesDrawArguments(std::vector<Mesh::DrawArugument>& draw_arguments) const {
+  if (meshes_.empty()) {
+    return;
+  }
+
+  draw_arguments.clear();
+  draw_arguments.resize(meshes_.size());
+
+  draw_arguments[0].index_count_ = static_cast<uint32_t>(meshes_[0]->GetIndicesNumber());
+  draw_arguments[0].vertex_count_ = static_cast<uint32_t>(meshes_[0]->GetVerticesNumber());
+  draw_arguments[0].index_start_ = 0;
+  draw_arguments[0].vertex_base_ = 0;
+
+  uint32_t accumulated_index_start = static_cast<uint32_t>(meshes_[0]->GetIndicesNumber());
+  uint32_t accumulated_vertex_base = static_cast<uint32_t>(meshes_[0]->GetVerticesNumber());
+
+  for (size_t i = 1; i < meshes_.size(); ++i) {
+    draw_arguments[i].index_count_ = static_cast<uint32_t>(meshes_[i]->GetIndicesNumber());
+    draw_arguments[i].vertex_count_ = static_cast<uint32_t>(meshes_[i]->GetVerticesNumber());
+    draw_arguments[i].index_start_ = accumulated_index_start;
+    draw_arguments[i].vertex_base_ = accumulated_vertex_base;
+
+    accumulated_index_start += static_cast<uint32_t>(meshes_[i]->GetIndicesNumber());
+    accumulated_vertex_base += static_cast<uint32_t>(meshes_[i]->GetVerticesNumber());
+  }
+}
+
 }  // namespace motion_animation
