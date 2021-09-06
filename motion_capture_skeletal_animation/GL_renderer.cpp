@@ -67,8 +67,6 @@ void GLRenderer::Render() {
     gl_shader_helper_ptr_->SetEigenMat4("view", view);
     gl_shader_helper_ptr_->SetEigenMat4("projection", proj);
 
-    // TODO(wushiyuan): draw each model
-
     // TODO(wushiyuan): test, delete
     std::vector<Eigen::Matrix4f> bone_transforms;
     static float time_in_seconds = 0.f;
@@ -94,15 +92,8 @@ void GLRenderer::Render() {
     std::vector<Mesh::DrawArugument> all_models_draw_arguments;
     scene_ptr->GetAllModelsDrawArguments(all_models_draw_arguments);
     std::for_each(all_models_draw_arguments.cbegin(), all_models_draw_arguments.cend(), [this](const Mesh::DrawArugument& draw_argument) {
-      // glDrawArrays(GL_TRIANGLES, draw_argument.vertex_base_, draw_argument.vertex_count_);
-      glDrawElements(GL_TRIANGLES, draw_argument.index_count_, GL_UNSIGNED_INT,  reinterpret_cast<const void*>(draw_argument.index_start_));
+      glDrawElementsInstancedBaseVertex(GL_TRIANGLES, draw_argument.index_count_, GL_UNSIGNED_INT, reinterpret_cast<void*>(draw_argument.index_start_ * sizeof(uint32_t)), 1, draw_argument.vertex_base_);
     });
-
-    //glBindVertexArray(VAO_);
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
-    //// glDrawArrays(GL_TRIANGLES, 0, total_vertices_number_);
-    //// TODO(wushiyuan): get draw number from Model object
-    //glDrawElements(GL_TRIANGLES, 189606, GL_UNSIGNED_INT, 0);
   }
 }
 
@@ -147,9 +138,6 @@ void GLRenderer::LoadVertices(const assets::MeshVertices* mesh_vertices) {
   // bone weight attribute
   glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, attribute_stride, (void*)attribute_offset);
   glEnableVertexAttribArray(4);
-
-  // TODO(wushiyuan): use member variable stored in model to determine draw number
-  total_vertices_number_ = mesh_vertices->model_all_meshes_vertices_number_;
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh_vertices->model_all_meshes_indices_size_, mesh_vertices->model_all_meshes_indices_data_.data(), GL_STATIC_DRAW);

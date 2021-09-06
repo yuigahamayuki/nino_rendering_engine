@@ -28,7 +28,6 @@ private:
   uint32_t VAO_ = 0;
   uint32_t VBO_ = 0;
   uint32_t EBO_ = 0;
-  size_t total_vertices_number_ = 0;
 
   std::string vertex_shader_file_path = "scene_vertex.glsl";
   std::string fragment_shader_file_path = "scene_fragment.glsl";
