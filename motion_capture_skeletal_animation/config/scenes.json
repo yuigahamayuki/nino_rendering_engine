@@ -1,0 +1,48 @@
+{
+  "scenes": [
+    {
+      "scene name": "test scene",
+      "models": [
+        {
+          "model name": "miruku",
+          "model path": "D:/game_assets/models/miruku/miruku.fbx"
+        }
+      ],
+      "camera": {
+        "pos x": 0,
+        "pos y": 2,
+        "pos z": 2,
+        "look x": 0,
+        "look y": 1,
+        "look z": 0,
+        "up x": 0,
+        "up y": 1,
+        "up z": 0
+      }
+    },
+    {
+      "scene name": "test scene 002",
+      "models": [
+        {
+          "model name": "miruku",
+          "model path": "miruku.fbx"
+        },
+        {
+          "model name": "ruby",
+          "model path": "ruby.fbx"
+        }
+      ],
+      "camera": {
+        "pos x": 0,
+        "pos y": 2,
+        "pos z": 2,
+        "look x": 0,
+        "look y": 1,
+        "look z": 0,
+        "up x": 0,
+        "up y": 1,
+        "up z": 0
+      }
+    }
+  ]
+}

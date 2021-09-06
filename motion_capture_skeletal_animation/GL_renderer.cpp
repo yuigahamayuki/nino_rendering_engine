@@ -45,12 +45,12 @@ void GLRenderer::Render() {
       return;
     }
     const Camera& camera = scene_ptr->GetCamera();
-    // Eigen::Matrix4f model(Eigen::Matrix4f::Identity());
-    Eigen::Matrix4f model;
-    model << 0.01f, 0.f, 0.f, 0.f,
-      0.f, 0.01f, 0.f, 0.f,
-      0.f, 0.f, 0.01f, 0.f,
-      0.f, 0.f, 0.f, 1.f;
+    Eigen::Matrix4f model(Eigen::Matrix4f::Identity());
+    //Eigen::Matrix4f model;
+    //model << 0.01f, 0.f, 0.f, 0.f,
+    //  0.f, 0.01f, 0.f, 0.f,
+    //  0.f, 0.f, 0.01f, 0.f,
+    //  0.f, 0.f, 0.f, 1.f;
 
     Eigen::Matrix4f view;
     Eigen::Matrix4f proj;
@@ -71,21 +71,20 @@ void GLRenderer::Render() {
     std::vector<Eigen::Matrix4f> bone_transforms;
     static float time_in_seconds = 0.f;
     time_in_seconds += 1.f;
-    // if (time_in_seconds > 34.7f) {
-    if (time_in_seconds > 133.f) {
+    if (time_in_seconds > 171.875f) {
       time_in_seconds = 0.f;
     }
-    //AnimationPlayer::GetSharedInstance().ComputeBoneTransforms(time_in_seconds,
-    //  bone_transforms,
-    //  AnimationManager::GetSharedInstance().GetBonesMapForModel("ruby"),
-    //  AnimationManager::GetSharedInstance().GetBonesInfoForModel("ruby"),
-    //  AnimationManager::GetSharedInstance().GetAnimationForModel("ruby", "Armature|Armature|Take 001|BaseLayer"),
-    //  AnimationManager::GetSharedInstance().GetAnimationRootNodeForModel("ruby"));
+    AnimationPlayer::GetSharedInstance().ComputeBoneTransforms(time_in_seconds,
+      bone_transforms,
+      AnimationManager::GetSharedInstance().GetBonesMapForModel("miruku"),
+      AnimationManager::GetSharedInstance().GetBonesInfoForModel("miruku"),
+      AnimationManager::GetSharedInstance().GetAnimationForModel("miruku", "Armature|ArmatureAction.001"),
+      AnimationManager::GetSharedInstance().GetAnimationRootNodeForModel("miruku"));
 
-    //for (size_t i = 0; i < bone_transforms.size(); ++i) {
-    //  const std::string uniform_name = std::string("bone_transforms") + "[" + std::to_string(i) + "]";
-    //  gl_shader_helper_ptr_->SetEigenMat4(uniform_name, bone_transforms[i]);
-    //}
+    for (size_t i = 0; i < bone_transforms.size(); ++i) {
+      const std::string uniform_name = std::string("bone_transforms") + "[" + std::to_string(i) + "]";
+      gl_shader_helper_ptr_->SetEigenMat4(uniform_name, bone_transforms[i]);
+    }
 
     glBindVertexArray(VAO_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);

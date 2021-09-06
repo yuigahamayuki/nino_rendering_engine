@@ -24,7 +24,6 @@ class Mesh {
     uint32_t vertex_count_ = 0;
     uint32_t vertex_base_ = 0;
     int diffuse_texture_index_ = -1;
-    // TODO(wushiyuan): add bone indices
   };
 
   static size_t GetSingleVertexSize() {

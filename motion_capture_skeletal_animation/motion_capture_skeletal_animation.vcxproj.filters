@@ -57,6 +57,9 @@
     <ClCompile Include="animation_player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="config_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="model_importer.h">
@@ -111,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="animation_player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="config_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

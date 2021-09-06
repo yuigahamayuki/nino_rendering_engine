@@ -2,6 +2,7 @@
 
 #include "model_importer.h"
 #include "assets.h"
+#include "config_manager.h"
 
 namespace motion_animation {
 
@@ -42,15 +43,11 @@ void Scene::GetAllModelsDrawArguments(std::vector<Mesh::DrawArugument>& all_mode
 
 void Scene::LoadModels(Renderer* renderer) {
   std::vector<std::unique_ptr<assets::Asset>> assets;
-  // Note(wushiyuan): For a real game engine: read config file to determine which models are contained in the scene, then load the models.
-  // Process 1st model.
-  {
-    // const std::string model_file_name("D:/game_assets/models/ruby-rose/source/rubyAnimated002.fbx");
-    // const std::string model_file_name("D:/game_assets/models/blender_test_animation/blender_test_animation_rotate.fbx");
-    const std::string model_file_name("D:/game_assets/models/blender_test_animation/ruby_processed.fbx");
-    const std::string model_name("ruby");
+  std::vector<config::SceneModelConfig> scene_models_config;
+  ConfigManager::GetSharedInstance().GetModelsConfigOfScene(scene_name_, scene_models_config);
 
-    LoadSingleModel(model_file_name, model_name);
+  for (size_t i = 0; i < scene_models_config.size(); ++i) {
+    LoadSingleModel(scene_models_config[i].model_path_, scene_models_config[i].model_name_);
     auto mesh_vertices = std::make_unique<assets::MeshVertices>();
     models_.back().GetAllMeshesVertexAndIndexData(mesh_vertices->model_all_meshes_vertices_data_, mesh_vertices->model_all_meshes_vertices_size_, mesh_vertices->model_all_meshes_vertices_number_,
       mesh_vertices->model_all_meshes_indices_data_, mesh_vertices->model_all_meshes_indices_size_, mesh_vertices->model_all_meshes_indices_number_);
@@ -59,17 +56,18 @@ void Scene::LoadModels(Renderer* renderer) {
     assets.emplace_back(std::move(mesh_vertices));
   }
 
-
   if (renderer) {
     renderer->LoadAssets(assets);
   }
 }
 
 void Scene::LoadCamera() {
-  // Note(wushiyuan): For a real game engine: read config file to determine camera's position and orientation.
-  Eigen::Vector3f camera_pos(0.f, 2.f, 2.f);
-  Eigen::Vector3f look_target(0.f, 1.f, 0.f);
-  Eigen::Vector3f up(0.f, 1.f, 0.f);
+  config::SceneCameraConfig scene_camera_config;
+  ConfigManager::GetSharedInstance().GetCameraConfigOfScene(scene_name_, scene_camera_config);
+
+  Eigen::Vector3f camera_pos(scene_camera_config.pos_x, scene_camera_config.pos_y, scene_camera_config.pos_z);
+  Eigen::Vector3f look_target(scene_camera_config.look_x, scene_camera_config.look_y, scene_camera_config.look_z);
+  Eigen::Vector3f up(scene_camera_config.up_x, scene_camera_config.up_y, scene_camera_config.up_z);
   camera_.Set(camera_pos, look_target, up);
 }
 

@@ -11,9 +11,7 @@ namespace motion_animation {
 class Engine {
 public:
   Engine() = default;
-  Engine(uint32_t width, uint32_t height) : width_(width), height_(height) {
-
-  }
+  Engine(uint32_t width, uint32_t height);
   ~Engine() = default;
 
   Engine(const Engine&) = delete;
@@ -21,14 +19,14 @@ public:
 
   void SetRendererToOpenGL();
 
-  // Note(wushiyuan): For a real game engine: read the save data to decide which scene to load.
+  // TODO(wushiyuan): For a real game engine: read the save data to decide which scene to load.
   void LoadScene();
 
   void Run();
 
 private:
-  uint32_t width_;
-  uint32_t height_;
+  uint32_t width_ = 0;
+  uint32_t height_ = 0;
 
   std::string current_scene_name_;
 
