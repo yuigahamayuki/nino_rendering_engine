@@ -34,6 +34,15 @@ void Model::GetAllMeshesVertexAndIndexData(std::vector<Mesh::Vertex>& all_meshes
   });
 }
 
+void Model::GetAllMeshesTexturesFilePaths(std::vector<std::string>& all_meshes_textures_file_paths) {
+  std::for_each(meshes_.begin(), meshes_.end(), [&all_meshes_textures_file_paths](std::unique_ptr<Mesh>& mesh) {
+    std::vector<std::string> single_mesh_textures_file_paths;
+    mesh->GetTexturesFilePaths(single_mesh_textures_file_paths);
+
+    all_meshes_textures_file_paths.insert(all_meshes_textures_file_paths.end(), single_mesh_textures_file_paths.cbegin(), single_mesh_textures_file_paths.cend());
+  });
+}
+
 void Model::LoadAnimations() {
   ModelImporter::GetSharedInstance().LoadAllAnimationsForModel(model_name_);
 }

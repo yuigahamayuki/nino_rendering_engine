@@ -2,7 +2,7 @@
 
 #include "window.h"
 
-class GLFWwindow;
+struct GLFWwindow;
 
 namespace motion_animation {
   

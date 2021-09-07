@@ -54,7 +54,7 @@ std::shared_ptr<AnimationNode> ConstructRootAnimationNodeFromAssimpNode(const ai
 
   Eigen::Matrix4f transform = util::MatrixAssimp2Eigen(assimp_node->mTransformation);
   std::shared_ptr<AnimationNode> node = std::make_shared<AnimationNode>(assimp_node->mName.C_Str(), parent, transform);
-  for (auto i = 0; i < assimp_node->mNumChildren; ++i) {
+  for (uint32_t i = 0; i < assimp_node->mNumChildren; ++i) {
     ConstructRootAnimationNodeFromAssimpNode(assimp_scene_ptr, assimp_node->mChildren[i], node->shared_from_this());
   }
 

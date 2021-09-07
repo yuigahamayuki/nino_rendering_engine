@@ -1,9 +1,11 @@
 #include "GL_renderer.h"
 
 #include <algorithm>
+#include <set>
 
 #include "scene_manager.h"
 #include "util_linear_algebra_helper.h"
+#include "util_image_loader.h"
 #include "animation_player.h"
 
 namespace motion_animation {
@@ -104,6 +106,11 @@ void GLRenderer::LoadAssets(const std::vector<std::unique_ptr<assets::Asset>>& a
         LoadVertices(mesh_vertices);
         break;
       }
+      case assets::AssetType::texture: {
+        assets::Textures* textures_asset = reinterpret_cast<assets::Textures*>(asset.get());
+        LoadTextures(textures_asset);
+        break;
+      }
       default:
         break;
     }
@@ -119,27 +126,66 @@ void GLRenderer::LoadVertices(const assets::MeshVertices* mesh_vertices) {
   size_t attribute_stride = Mesh::GetSingleVertexSize();
   size_t attribute_offset = 0;
   // position attribute
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, attribute_stride, (void*)attribute_offset);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(attribute_stride), (void*)attribute_offset);
   glEnableVertexAttribArray(0);
   attribute_offset += 3 * sizeof(float);
   // normal attribute
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, attribute_stride, (void*)attribute_offset);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(attribute_stride), (void*)attribute_offset);
   glEnableVertexAttribArray(1);
   attribute_offset += 3 * sizeof(float);
   // texture coordinate attribtue
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, attribute_stride, (void*)attribute_offset);
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(attribute_stride), (void*)attribute_offset);
   glEnableVertexAttribArray(2);
   attribute_offset += 2 * sizeof(float);
   // bone id attribute
-  glVertexAttribIPointer(3, 4, GL_INT, attribute_stride, (void*)attribute_offset);
+  glVertexAttribIPointer(3, 4, GL_INT, static_cast<GLsizei>(attribute_stride), (void*)attribute_offset);
   glEnableVertexAttribArray(3);
   attribute_offset += 4 * sizeof(int);
   // bone weight attribute
-  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, attribute_stride, (void*)attribute_offset);
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(attribute_stride), (void*)attribute_offset);
   glEnableVertexAttribArray(4);
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh_vertices->model_all_meshes_indices_size_, mesh_vertices->model_all_meshes_indices_data_.data(), GL_STATIC_DRAW);
+}
+
+void GLRenderer::LoadTextures(const assets::Textures* textures_asset) {
+  std::set<std::string> textures_file_paths_set;
+  texture_ids_.resize(textures_asset->textures_file_paths_.size());
+  gl_shader_helper_ptr_->use();
+
+  for (size_t i = 0; i < textures_asset->textures_file_paths_.size(); ++i) {
+    const std::string& texture_file_path = textures_asset->textures_file_paths_[i];
+    if (textures_file_paths_set.find(texture_file_path) == textures_file_paths_set.end()) {
+      // *** Read texture file from disk. ***
+      util::ImageLoader::GLTextureDesc gl_texture_desc;
+      int bytes_per_row = 0;
+      std::vector<uint8_t> image_data;
+      auto image_size = util::ImageLoader::LoadImageDataFromFile(image_data, gl_texture_desc, texture_file_path, bytes_per_row);
+
+      // *** Upload texture to GPU. ***
+      glGenTextures(1, &texture_ids_[i]);
+      glBindTexture(GL_TEXTURE_2D, texture_ids_[i]);
+      // set the texture wrapping parameters
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+      // set texture filtering parameters
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      if (image_size > 0) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gl_texture_desc.width, gl_texture_desc.height, 0, gl_texture_desc.format, GL_UNSIGNED_BYTE, image_data.data());
+        glGenerateMipmap(GL_TEXTURE_2D);
+      } else {
+        std::cout << "Failed to load texture" << std::endl;
+      }
+      // TODO(wushiyuan): gl_shader_helper_ptr_->setInt to set sampler, need multipler sampler?
+
+      // Do not load the same texture twice.
+      textures_file_paths_set.emplace(texture_file_path);
+    } else {
+
+    }
+  }
 }
 
 

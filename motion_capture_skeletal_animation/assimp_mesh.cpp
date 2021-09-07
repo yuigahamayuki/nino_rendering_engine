@@ -115,4 +115,35 @@ void AssimpMesh::GetIndexData(std::vector<uint32_t>& indices_data, size_t& indic
   }
 }
 
+void AssimpMesh::GetTexturesFilePaths(std::vector<std::string>& textures_file_paths) {
+  textures_file_paths.clear();
+  if (!assimp_scene_ptr_) {
+    return;
+  }
+
+  auto total_mesh_number = assimp_scene_ptr_->mNumMeshes;
+  if (mesh_index_of_assimp_ < total_mesh_number) {
+    auto material_index = assimp_scene_ptr_->mMeshes[mesh_index_of_assimp_]->mMaterialIndex;
+    auto total_material_number = assimp_scene_ptr_->mNumMaterials;
+    if (material_index < total_material_number) {
+      const aiMaterial* material = assimp_scene_ptr_->mMaterials[material_index];
+      // TODO(wushiyuan): may add more texture types
+      GetTexturesFilePathsForTextureType(material, aiTextureType_DIFFUSE, textures_file_paths);
+      GetTexturesFilePathsForTextureType(material, aiTextureType_SPECULAR, textures_file_paths);
+      GetTexturesFilePathsForTextureType(material, aiTextureType_NORMALS, textures_file_paths);
+    }
+  }
+}
+
+void AssimpMesh::GetTexturesFilePathsForTextureType(const aiMaterial* material, aiTextureType texture_type, std::vector<std::string>& textures_file_paths) {
+  for (uint32_t i = 0; i < material->GetTextureCount(texture_type); ++i) {
+    aiString texture_file_path_ai_string;
+    material->GetTexture(texture_type, i, &texture_file_path_ai_string);
+    std::string texture_file_path(texture_file_path_ai_string.C_Str());
+    if (!texture_file_path.empty()) {
+      textures_file_paths.emplace_back(texture_file_path);
+    }
+  }
+}
+
 }  // namespace motion_animation

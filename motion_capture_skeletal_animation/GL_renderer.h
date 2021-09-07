@@ -24,10 +24,13 @@ public:
 
 private:
   void LoadVertices(const assets::MeshVertices* mesh_vertices);
+  void LoadTextures(const assets::Textures* textures_asset);
 
   uint32_t VAO_ = 0;
   uint32_t VBO_ = 0;
   uint32_t EBO_ = 0;
+
+  std::vector<GLuint> texture_ids_;
 
   std::string vertex_shader_file_path = "scene_vertex.glsl";
   std::string fragment_shader_file_path = "scene_fragment.glsl";

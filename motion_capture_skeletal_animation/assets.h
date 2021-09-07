@@ -38,6 +38,14 @@ struct MeshVertices : public Asset {
   size_t model_all_meshes_indices_number_ = 0;
 };  // struct MeshVertices
 
+struct Textures : public Asset {
+  Textures() {
+    asset_type_ = AssetType::texture;
+  }
+
+  std::vector<std::string> textures_file_paths_;
+};
+
 }  // namespace assets
 
 }  // namespace motion_animation

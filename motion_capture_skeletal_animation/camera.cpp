@@ -39,7 +39,7 @@ Eigen::Matrix4f Camera::ComputePerspectiveMatrixFovRH_OpenGLNDC(float fov_in_rad
 void Camera::GetViewProjMatrices(Eigen::Matrix4f& view, Eigen::Matrix4f& proj, float fov_in_degrees, float screen_width, float screen_height, float near_z, float far_z) const {
   view = ComputeViewMatrixRH(camera_pos_, look_target_, up_);
 
-  float fov_in_radius = fov_in_degrees * M_PI / 180.f;
+  float fov_in_radius = static_cast<float>(fov_in_degrees * M_PI / 180.f);
   float aspect_ratio = screen_width / screen_height;
 
   proj = ComputePerspectiveMatrixFovRH_OpenGLNDC(fov_in_radius, aspect_ratio, near_z, far_z);

@@ -48,12 +48,18 @@ void Scene::LoadModels(Renderer* renderer) {
 
   for (size_t i = 0; i < scene_models_config.size(); ++i) {
     LoadSingleModel(scene_models_config[i].model_path_, scene_models_config[i].model_name_);
-    auto mesh_vertices = std::make_unique<assets::MeshVertices>();
-    models_.back().GetAllMeshesVertexAndIndexData(mesh_vertices->model_all_meshes_vertices_data_, mesh_vertices->model_all_meshes_vertices_size_, mesh_vertices->model_all_meshes_vertices_number_,
-      mesh_vertices->model_all_meshes_indices_data_, mesh_vertices->model_all_meshes_indices_size_, mesh_vertices->model_all_meshes_indices_number_);
-    models_.back().SetTotalVerticesNumberForAllMeshes(mesh_vertices->model_all_meshes_vertices_number_);
-    models_.back().SetTotalIndicesNumberForAllMeshes(mesh_vertices->model_all_meshes_indices_number_);
-    assets.emplace_back(std::move(mesh_vertices));
+    // Prepare vertices to upload
+    auto mesh_vertices_asset = std::make_unique<assets::MeshVertices>();
+    models_.back().GetAllMeshesVertexAndIndexData(mesh_vertices_asset->model_all_meshes_vertices_data_, mesh_vertices_asset->model_all_meshes_vertices_size_, mesh_vertices_asset->model_all_meshes_vertices_number_,
+      mesh_vertices_asset->model_all_meshes_indices_data_, mesh_vertices_asset->model_all_meshes_indices_size_, mesh_vertices_asset->model_all_meshes_indices_number_);
+    models_.back().SetTotalVerticesNumberForAllMeshes(mesh_vertices_asset->model_all_meshes_vertices_number_);
+    models_.back().SetTotalIndicesNumberForAllMeshes(mesh_vertices_asset->model_all_meshes_indices_number_);
+    assets.emplace_back(std::move(mesh_vertices_asset));
+
+    // Prepare textures file paths to read and upload
+    auto textures_asset = std::make_unique<assets::Textures>();
+    models_.back().GetAllMeshesTexturesFilePaths(textures_asset->textures_file_paths_);
+    assets.emplace_back(std::move(textures_asset));
   }
 
   if (renderer) {
