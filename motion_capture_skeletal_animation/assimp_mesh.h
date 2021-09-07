@@ -21,7 +21,7 @@ class AssimpMesh : public Mesh {
   void GetTexturesFilePaths(std::vector<std::string>& textures_file_paths) override;
 
  private:
-   void GetTexturesFilePathsForTextureType(const aiMaterial* material, aiTextureType texture_type, std::vector<std::string>& textures_file_paths);
+   void GetTexturesFilePathsForTextureType(const aiMaterial* material, aiTextureType assimp_texture_type, std::vector<std::string>& textures_file_paths);
 
   const aiScene* assimp_scene_ptr_ = nullptr;
   uint32_t mesh_index_of_assimp_ = 0;

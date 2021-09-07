@@ -64,7 +64,7 @@ void GLWindow::Initialize() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  window_ = glfwCreateWindow(width_, height_, "LearnOpenGL", NULL, NULL);
+  window_ = glfwCreateWindow(width_, height_, "Render Api: OpenGL", NULL, NULL);
   if (window_ == NULL) {
     std::cout << "Failed to create GLFW window" << std::endl;
     glfwTerminate();

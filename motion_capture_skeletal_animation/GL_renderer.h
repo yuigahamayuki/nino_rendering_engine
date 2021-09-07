@@ -23,14 +23,23 @@ public:
   void LoadAssets(const std::vector<std::unique_ptr<assets::Asset>>& assets) override;
 
 private:
+  // Sampler slot
+  enum class TextureUnit {
+    diffuse_texture_unit = 0,
+    specular_texture_unit = 1,
+    normal_texture_unit = 2,
+  };
   void LoadVertices(const assets::MeshVertices* mesh_vertices);
   void LoadTextures(const assets::Textures* textures_asset);
+
+  void BindTexture(const Mesh::Texture& texture);
 
   uint32_t VAO_ = 0;
   uint32_t VBO_ = 0;
   uint32_t EBO_ = 0;
 
   std::vector<GLuint> texture_ids_;
+  std::map<std::string, GLuint> texture_file_path_id_map_;
 
   std::string vertex_shader_file_path = "scene_vertex.glsl";
   std::string fragment_shader_file_path = "scene_fragment.glsl";

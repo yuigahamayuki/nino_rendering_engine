@@ -2,7 +2,11 @@
 
 out vec4 color;
 
+in vec2 tex_coord;
+
+uniform sampler2D diffuse_sampler;
+
 void main()
 {
-	color = vec4(0.0f, 0.0f, 1.0f, 1.0f);
+	color = texture(diffuse_sampler, tex_coord);
 }

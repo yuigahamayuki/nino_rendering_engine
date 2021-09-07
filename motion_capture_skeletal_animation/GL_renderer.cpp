@@ -93,6 +93,9 @@ void GLRenderer::Render() {
     std::vector<Mesh::DrawArugument> all_models_draw_arguments;
     scene_ptr->GetAllModelsDrawArguments(all_models_draw_arguments);
     std::for_each(all_models_draw_arguments.cbegin(), all_models_draw_arguments.cend(), [this](const Mesh::DrawArugument& draw_argument) {
+      for (size_t i = 0; i < draw_argument.textures_.size(); ++i) {
+        BindTexture(draw_argument.textures_[i]);
+      }
       glDrawElementsInstancedBaseVertex(GL_TRIANGLES, draw_argument.index_count_, GL_UNSIGNED_INT, reinterpret_cast<void*>(draw_argument.index_start_ * sizeof(uint32_t)), 1, draw_argument.vertex_base_);
     });
   }
@@ -151,8 +154,9 @@ void GLRenderer::LoadVertices(const assets::MeshVertices* mesh_vertices) {
 
 void GLRenderer::LoadTextures(const assets::Textures* textures_asset) {
   std::set<std::string> textures_file_paths_set;
-  texture_ids_.resize(textures_asset->textures_file_paths_.size());
   gl_shader_helper_ptr_->use();
+  // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+  gl_shader_helper_ptr_->setInt("diffuse_sampler", static_cast<int>(TextureUnit::diffuse_texture_unit));
 
   for (size_t i = 0; i < textures_asset->textures_file_paths_.size(); ++i) {
     const std::string& texture_file_path = textures_asset->textures_file_paths_[i];
@@ -164,21 +168,24 @@ void GLRenderer::LoadTextures(const assets::Textures* textures_asset) {
       auto image_size = util::ImageLoader::LoadImageDataFromFile(image_data, gl_texture_desc, texture_file_path, bytes_per_row);
 
       // *** Upload texture to GPU. ***
-      glGenTextures(1, &texture_ids_[i]);
-      glBindTexture(GL_TEXTURE_2D, texture_ids_[i]);
-      // set the texture wrapping parameters
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-      // set texture filtering parameters
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       if (image_size > 0) {
+        GLuint texture_id = 0;
+        glGenTextures(1, &texture_id);
+        glBindTexture(GL_TEXTURE_2D, texture_id);
+        texture_ids_.emplace_back(texture_id);
+        // set the texture wrapping parameters
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        // set texture filtering parameters
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gl_texture_desc.width, gl_texture_desc.height, 0, gl_texture_desc.format, GL_UNSIGNED_BYTE, image_data.data());
         glGenerateMipmap(GL_TEXTURE_2D);
+
+        texture_file_path_id_map_.emplace(texture_file_path, texture_id);
       } else {
         std::cout << "Failed to load texture" << std::endl;
       }
-      // TODO(wushiyuan): gl_shader_helper_ptr_->setInt to set sampler, need multipler sampler?
 
       // Do not load the same texture twice.
       textures_file_paths_set.emplace(texture_file_path);
@@ -186,6 +193,32 @@ void GLRenderer::LoadTextures(const assets::Textures* textures_asset) {
 
     }
   }
+}
+
+void GLRenderer::BindTexture(const Mesh::Texture& texture) {
+  GLenum texture_unit = GL_TEXTURE0;
+  
+  switch (texture.texture_type_) {
+    case Mesh::Texture::TextureType::diffuse: {
+      texture_unit = GL_TEXTURE0;
+      break;
+    }
+    case Mesh::Texture::TextureType::specular: {
+      texture_unit = GL_TEXTURE1;
+      break;
+    }
+    case Mesh::Texture::TextureType::normal: {
+      texture_unit = GL_TEXTURE2;
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+
+  glActiveTexture(texture_unit);
+  auto texture_id = texture_file_path_id_map_[texture.texture_file_path_];
+  glBindTexture(GL_TEXTURE_2D, texture_id);
 }
 
 

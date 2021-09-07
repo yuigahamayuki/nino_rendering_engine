@@ -18,12 +18,28 @@ class Mesh {
     float bone_weights_[4]{};
   };  // struct Vertex
 
+  struct Texture {
+    enum class TextureType {
+      diffuse,
+      specular,
+      normal,
+    };
+
+    Texture(TextureType texture_type, const std::string& texture_file_path) 
+      : texture_type_(texture_type), texture_file_path_(texture_file_path) {
+
+    }
+
+    TextureType texture_type_ = TextureType::diffuse;
+    std::string texture_file_path_;
+  };
+
   struct DrawArugument {
     uint32_t index_count_ = 0;
     uint32_t index_start_ = 0;
     uint32_t vertex_count_ = 0;
     uint32_t vertex_base_ = 0;
-    int diffuse_texture_index_ = -1;
+    std::vector<Texture> textures_;
   };
 
   static size_t GetSingleVertexSize() {
@@ -39,10 +55,6 @@ class Mesh {
 
   const std::string GetMeshName() const {
     return mesh_name_;
-  }
-
-  const std::string GetDiffuseTextureName() const {
-    return diffuse_texture_name_;
   }
 
   const size_t GetVerticesSize() const {
@@ -61,16 +73,16 @@ class Mesh {
     return indices_number_;
   }
 
+  const std::vector<Texture> GetTextures() const {
+    return textures_;
+  }
+
   const std::string GetModelName() const {
     return model_name_;
   }
 
   void SetMeshName(const std::string& mesh_name) {
     mesh_name_ = mesh_name;
-  }
-
-  void SetDiffuseTextureName(const std::string& diffuse_texture_name) {
-    diffuse_texture_name_ = diffuse_texture_name;
   }
 
   void SetVerticesSize(size_t vertices_size) {
@@ -89,6 +101,10 @@ class Mesh {
     indices_number_ = indices_number;
   }
 
+  void InsertTexture(Texture::TextureType texture_type, const std::string& texture_file_path) {
+    textures_.emplace_back(texture_type, texture_file_path);
+  }
+
   void SetModelName(const std::string& model_name) {
     model_name_ = model_name;
   }
@@ -100,13 +116,14 @@ class Mesh {
 
  private:
   std::string mesh_name_;
-  std::string diffuse_texture_name_;
 
   size_t vertices_size_ = 0;
   size_t vertices_number_ = 0;
 
   size_t indices_size_ = 0;
   size_t indices_number_ = 0;
+
+  std::vector<Texture> textures_;
 
   // The name of model which this mesh belongs to
   std::string model_name_;

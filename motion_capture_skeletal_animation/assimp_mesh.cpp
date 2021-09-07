@@ -6,6 +6,34 @@
 
 namespace {
 
+motion_animation::Mesh::Texture::TextureType ConvertAssimpTextureType(const aiTextureType& assimp_texture_type) {
+  motion_animation::Mesh::Texture::TextureType texture_type = motion_animation::Mesh::Texture::TextureType::diffuse;
+
+  switch (assimp_texture_type) {
+    case aiTextureType_DIFFUSE: {
+      texture_type = motion_animation::Mesh::Texture::TextureType::diffuse;
+      break;
+    }
+    case aiTextureType_SPECULAR: {
+      texture_type = motion_animation::Mesh::Texture::TextureType::specular;
+      break;
+    }
+    case aiTextureType_NORMALS: {
+      texture_type = motion_animation::Mesh::Texture::TextureType::normal;
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+
+  return texture_type;
+}
+
+}  // namespace
+
+namespace {
+
 void InsertBoneIdAndBoneWeightToVertexData(std::vector<motion_animation::Mesh::Vertex>& vertices_data, uint32_t vertex_index, int bone_index, float bone_weight) {
   if (vertex_index < vertices_data.size()) {
     for (auto i = 0; i < _countof(vertices_data[vertex_index].bone_ids_); ++i) {
@@ -52,8 +80,6 @@ void AssimpMesh::GetVertexData(std::vector<Vertex>& vertices_data, size_t& verti
 
     SetVerticesNumber(vertices_number);
     SetVerticesSize(vertices_size);
-
-    SetDiffuseTextureName(mesh->mTextureCoordsNames[0].C_Str());
 
     for (uint32_t i = 0; i < mesh->mNumVertices; ++i) {
       Vertex vertex;
@@ -135,13 +161,15 @@ void AssimpMesh::GetTexturesFilePaths(std::vector<std::string>& textures_file_pa
   }
 }
 
-void AssimpMesh::GetTexturesFilePathsForTextureType(const aiMaterial* material, aiTextureType texture_type, std::vector<std::string>& textures_file_paths) {
-  for (uint32_t i = 0; i < material->GetTextureCount(texture_type); ++i) {
+void AssimpMesh::GetTexturesFilePathsForTextureType(const aiMaterial* material, aiTextureType assimp_texture_type, std::vector<std::string>& textures_file_paths) {
+  for (uint32_t i = 0; i < material->GetTextureCount(assimp_texture_type); ++i) {
     aiString texture_file_path_ai_string;
-    material->GetTexture(texture_type, i, &texture_file_path_ai_string);
+    material->GetTexture(assimp_texture_type, i, &texture_file_path_ai_string);
     std::string texture_file_path(texture_file_path_ai_string.C_Str());
     if (!texture_file_path.empty()) {
       textures_file_paths.emplace_back(texture_file_path);
+      Texture::TextureType texture_type = ConvertAssimpTextureType(assimp_texture_type);
+      InsertTexture(texture_type, texture_file_path);
     }
   }
 }
