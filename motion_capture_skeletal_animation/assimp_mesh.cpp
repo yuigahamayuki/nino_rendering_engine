@@ -86,11 +86,15 @@ void AssimpMesh::GetVertexData(std::vector<Vertex>& vertices_data, size_t& verti
       vertex.positions_[0] = mesh->mVertices[i].x;
       vertex.positions_[1] = mesh->mVertices[i].y;
       vertex.positions_[2] = mesh->mVertices[i].z;
-      vertex.normals_[0] = mesh->mNormals[i].x;
-      vertex.normals_[1] = mesh->mNormals[i].y;
-      vertex.normals_[2] = mesh->mNormals[i].z;
-      vertex.texture_coordinates_[0] = mesh->mTextureCoords[0][i].x;
-      vertex.texture_coordinates_[1] = mesh->mTextureCoords[0][i].y;
+      if (mesh->mNormals) {
+        vertex.normals_[0] = mesh->mNormals[i].x;
+        vertex.normals_[1] = mesh->mNormals[i].y;
+        vertex.normals_[2] = mesh->mNormals[i].z;
+      }
+      if (mesh->mTextureCoords[0]) {
+        vertex.texture_coordinates_[0] = mesh->mTextureCoords[0][i].x;
+        vertex.texture_coordinates_[1] = mesh->mTextureCoords[0][i].y;
+      }
       
       vertices_data.emplace_back(vertex);
     }
