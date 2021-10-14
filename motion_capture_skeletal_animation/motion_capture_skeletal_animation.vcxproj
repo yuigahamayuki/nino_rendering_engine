@@ -152,6 +152,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="GLFW_window.cpp" />
     <ClCompile Include="GL_renderer.cpp" />
+    <ClCompile Include="input_manager.cpp" />
     <ClCompile Include="util_image_loader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="model.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="GL_renderer.h" />
     <ClInclude Include="assets.h" />
     <ClInclude Include="GL_shader_helper.h" />
+    <ClInclude Include="input_manager.h" />
     <ClInclude Include="util_image_loader.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
