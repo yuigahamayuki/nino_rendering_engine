@@ -23,8 +23,6 @@ void GLRenderer::Initialize() {
   // -----------------------------
   glEnable(GL_DEPTH_TEST);
 
-  gl_shader_helper_ptr_ = std::make_unique<Shader>(vertex_shader_file_path.c_str(), fragment_shader_file_path.c_str());
-
   glGenVertexArrays(1, &VAO_);
   glGenBuffers(1, &VBO_);
   glGenBuffers(1, &EBO_);
@@ -149,12 +147,6 @@ void GLRenderer::LoadVertices(const assets::MeshVertices* mesh_vertices) {
 
 void GLRenderer::LoadTextures(const assets::Textures* textures_asset) {
   std::set<std::string> textures_file_paths_set;
-  gl_shader_helper_ptr_->use();
-  // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-  gl_shader_helper_ptr_->setInt("diffuse_sampler", static_cast<int>(TextureUnit::diffuse_texture_unit));
-  gl_shader_helper_ptr_->setInt("specular_sampler", static_cast<int>(TextureUnit::specular_texture_unit));
-  gl_shader_helper_ptr_->setInt("normal_sampler", static_cast<int>(TextureUnit::normal_texture_unit));
-  gl_shader_helper_ptr_->setInt("alpha_sampler", static_cast<int>(TextureUnit::alpha_texture_unit));
 
   for (size_t i = 0; i < textures_asset->textures_file_paths_.size(); ++i) {
     const std::string& texture_file_path = textures_asset->textures_file_paths_[i];
@@ -177,7 +169,7 @@ void GLRenderer::LoadTextures(const assets::Textures* textures_asset) {
         // set texture filtering parameters
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, gl_texture_desc.width, gl_texture_desc.height, 0, gl_texture_desc.format, GL_UNSIGNED_BYTE, image_data.data());
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, gl_texture_desc.width, gl_texture_desc.height, 0, gl_texture_desc.format, GL_UNSIGNED_BYTE, image_data.data());
         glGenerateMipmap(GL_TEXTURE_2D);
 
         texture_file_path_id_map_.emplace(texture_file_path, texture_id);
@@ -191,6 +183,27 @@ void GLRenderer::LoadTextures(const assets::Textures* textures_asset) {
 
     }
   }
+
+  std::string fragment_macro;
+  bool has_texture_types_other_than_diffuse = false;
+  if (textures_asset->texture_type_set_.find(Mesh::Texture::TextureType::alpha) != textures_asset->texture_type_set_.end()) {
+    fragment_macro += std::string("#define has_alpha_texture\n");
+    has_texture_types_other_than_diffuse = true;
+    std::cout << "model has alpha texture(s)" << std::endl;
+  }
+
+  if (has_texture_types_other_than_diffuse) {
+    gl_shader_helper_ptr_ = std::make_unique<Shader>(vertex_shader_file_path.c_str(), fragment_shader_file_path.c_str(), nullptr, nullptr, fragment_macro.c_str());
+  } else {
+    gl_shader_helper_ptr_ = std::make_unique<Shader>(vertex_shader_file_path.c_str(), fragment_shader_file_path.c_str());
+  }
+
+  gl_shader_helper_ptr_->use();
+  // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+  gl_shader_helper_ptr_->setInt("diffuse_sampler", static_cast<int>(TextureUnit::diffuse_texture_unit));
+  gl_shader_helper_ptr_->setInt("specular_sampler", static_cast<int>(TextureUnit::specular_texture_unit));
+  gl_shader_helper_ptr_->setInt("normal_sampler", static_cast<int>(TextureUnit::normal_texture_unit));
+  gl_shader_helper_ptr_->setInt("alpha_sampler", static_cast<int>(TextureUnit::alpha_texture_unit));
 }
 
 void GLRenderer::BindTexture(const Mesh::Texture& texture) {
