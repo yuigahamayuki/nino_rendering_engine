@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <set>
 
 #include "mesh.h"
 
@@ -39,7 +40,7 @@ class Model {
   void GetAllMeshesVertexAndIndexData(std::vector<Mesh::Vertex>& all_meshes_vertices_data, size_t& all_meshes_vertices_size, size_t& all_meshes_vertices_number,
     std::vector<uint32_t>& all_meshes_indices_data, size_t& all_meshes_indices_size, size_t& all_meshes_indices_number);
 
-  void GetAllMeshesTexturesFilePaths(std::vector<std::string>& all_meshes_textures_file_paths);
+  void GetAllMeshesTexturesFilePaths(std::set<Mesh::Texture::TextureType>& all_meshes_texture_type_set, std::vector<std::string>& all_meshes_textures_file_paths);
 
   void LoadAnimations();
 

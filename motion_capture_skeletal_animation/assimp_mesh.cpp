@@ -22,6 +22,10 @@ motion_animation::Mesh::Texture::TextureType ConvertAssimpTextureType(const aiTe
       texture_type = motion_animation::Mesh::Texture::TextureType::normal;
       break;
     }
+    case aiTextureType_OPACITY: {
+      texture_type = motion_animation::Mesh::Texture::TextureType::alpha;
+      break;
+    }
     default: {
       break;
     }
@@ -145,7 +149,7 @@ void AssimpMesh::GetIndexData(std::vector<uint32_t>& indices_data, size_t& indic
   }
 }
 
-void AssimpMesh::GetTexturesFilePaths(std::vector<std::string>& textures_file_paths) {
+void AssimpMesh::GetTexturesTypesAndFilePaths(std::set<Texture::TextureType>& texture_type_set, std::vector<std::string>& textures_file_paths) {
   textures_file_paths.clear();
   if (!assimp_scene_ptr_) {
     return;
@@ -158,21 +162,23 @@ void AssimpMesh::GetTexturesFilePaths(std::vector<std::string>& textures_file_pa
     if (material_index < total_material_number) {
       const aiMaterial* material = assimp_scene_ptr_->mMaterials[material_index];
       // TODO(wushiyuan): may add more texture types
-      GetTexturesFilePathsForTextureType(material, aiTextureType_DIFFUSE, textures_file_paths);
-      GetTexturesFilePathsForTextureType(material, aiTextureType_SPECULAR, textures_file_paths);
-      GetTexturesFilePathsForTextureType(material, aiTextureType_NORMALS, textures_file_paths);
+      GetTexturesFilePathsForTextureType(material, aiTextureType_DIFFUSE, texture_type_set, textures_file_paths);
+      GetTexturesFilePathsForTextureType(material, aiTextureType_SPECULAR, texture_type_set, textures_file_paths);
+      GetTexturesFilePathsForTextureType(material, aiTextureType_NORMALS, texture_type_set, textures_file_paths);
+      GetTexturesFilePathsForTextureType(material, aiTextureType_OPACITY, texture_type_set, textures_file_paths);
     }
   }
 }
 
-void AssimpMesh::GetTexturesFilePathsForTextureType(const aiMaterial* material, aiTextureType assimp_texture_type, std::vector<std::string>& textures_file_paths) {
+void AssimpMesh::GetTexturesFilePathsForTextureType(const aiMaterial* material, aiTextureType assimp_texture_type, std::set<Texture::TextureType>& texture_type_set, std::vector<std::string>& textures_file_paths) {
   for (uint32_t i = 0; i < material->GetTextureCount(assimp_texture_type); ++i) {
     aiString texture_file_path_ai_string;
     material->GetTexture(assimp_texture_type, i, &texture_file_path_ai_string);
     std::string texture_file_path(texture_file_path_ai_string.C_Str());
     if (!texture_file_path.empty()) {
-      textures_file_paths.emplace_back(texture_file_path);
       Texture::TextureType texture_type = ConvertAssimpTextureType(assimp_texture_type);
+      texture_type_set.insert(texture_type);
+      textures_file_paths.emplace_back(texture_file_path);
       InsertTexture(texture_type, texture_file_path);
     }
   }

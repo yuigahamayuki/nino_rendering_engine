@@ -1,5 +1,7 @@
 #pragma once
 
+#include <set>
+
 #include "mesh.h"
 
 namespace motion_animation {
@@ -43,6 +45,10 @@ struct Textures : public Asset {
     asset_type_ = AssetType::texture;
   }
 
+  // Used to compile shader using macro for different texture type combinations.
+  // For example, in fragment shader the code is selectively compiled to
+  // use normal map depending on whether the model has normal maps.
+  std::set<Mesh::Texture::TextureType> texture_type_set_;
   std::vector<std::string> textures_file_paths_;
 };
 

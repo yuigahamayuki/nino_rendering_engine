@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <cstdint>
+#include <set>
 
 namespace motion_animation {
 
@@ -23,6 +24,7 @@ class Mesh {
       diffuse,
       specular,
       normal,
+      alpha,
     };
 
     Texture(TextureType texture_type, const std::string& texture_file_path) 
@@ -112,7 +114,7 @@ class Mesh {
   virtual void GetVertexData(std::vector<Vertex>& vertices_data, size_t& vertices_size, size_t& vertices_number) = 0;
   virtual void GetIndexData(std::vector<uint32_t>& indices_data, size_t& indices_size, size_t& indices_number) = 0;
   // Get textures file paths attached to this mesh, a mesh may have multiple textures, e.g, diffuse, normal, etc.
-  virtual void GetTexturesFilePaths(std::vector<std::string>& textures_file_paths) = 0;
+  virtual void GetTexturesTypesAndFilePaths(std::set<Texture::TextureType>& texture_type_set, std::vector<std::string>& textures_file_paths) = 0;
 
  private:
   std::string mesh_name_;

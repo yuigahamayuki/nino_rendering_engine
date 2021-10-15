@@ -28,6 +28,7 @@ private:
     diffuse_texture_unit = 0,
     specular_texture_unit = 1,
     normal_texture_unit = 2,
+    alpha_texture_unit = 3,
   };
   void LoadVertices(const assets::MeshVertices* mesh_vertices);
   void LoadTextures(const assets::Textures* textures_asset);

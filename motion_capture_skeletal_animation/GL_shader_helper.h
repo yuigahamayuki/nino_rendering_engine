@@ -19,7 +19,7 @@ public:
   unsigned int ID;
   // constructor generates the shader on the fly
   // ------------------------------------------------------------------------
-  Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr)
+  Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr, const char* vertex_macro = nullptr, const char* fragment_macro = nullptr)
   {
     // 1. retrieve the vertex/fragment source code from filePath
     std::string vertexCode;
@@ -66,14 +66,29 @@ public:
     const char* fShaderCode = fragmentCode.c_str();
     // 2. compile shaders
     unsigned int vertex, fragment;
+    const std::string version_header("#version 460 core\n");
     // vertex shader
     vertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex, 1, &vShaderCode, NULL);
+    std::string vertex_source;
+    if (vertex_macro) {
+      vertex_source = version_header + std::string(vertex_macro) + vertexCode;
+    } else {
+      vertex_source = version_header + vertexCode;
+    }
+    const char* vertex_source_c_str = vertex_source.c_str();
+    glShaderSource(vertex, 1, &vertex_source_c_str, NULL);
     glCompileShader(vertex);
     checkCompileErrors(vertex, "VERTEX");
     // fragment Shader
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment, 1, &fShaderCode, NULL);
+    std::string fragment_source;
+    if (fragment_macro) {
+      fragment_source = version_header + std::string(fragment_macro) + fragmentCode;
+    } else {
+      fragment_source = version_header + fragmentCode;
+    }
+    const char* fragment_source_c_str = fragment_source.c_str();
+    glShaderSource(fragment, 1, &fragment_source_c_str, NULL);
     glCompileShader(fragment);
     checkCompileErrors(fragment, "FRAGMENT");
     // if geometry shader is given, compile geometry shader

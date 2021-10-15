@@ -48,15 +48,10 @@ void GLRenderer::Render() {
     }
     const Camera& camera = scene_ptr->GetCamera();
     Eigen::Matrix4f model(Eigen::Matrix4f::Identity());
-    //Eigen::Matrix4f model;
-    //model << 0.01f, 0.f, 0.f, 0.f,
-    //  0.f, 0.01f, 0.f, 0.f,
-    //  0.f, 0.f, 0.01f, 0.f,
-    //  0.f, 0.f, 0.f, 1.f;
 
     Eigen::Matrix4f view;
     Eigen::Matrix4f proj;
-    camera.GetViewProjMatrices(view, proj, 90.f, 1920, 1080, 1.f, 10.f);
+    camera.GetViewProjMatrices(view, proj, 60.f, 1920, 1080, 0.01f, 10.f);
 
     glm::mat4 glm_model = util::MatrixEigen2GLM(model);
     glm::mat4 glm_view = util::MatrixEigen2GLM(view);
@@ -70,7 +65,7 @@ void GLRenderer::Render() {
     gl_shader_helper_ptr_->SetEigenMat4("projection", proj);
 
     // TODO(wushiyuan): test, delete
-    std::vector<Eigen::Matrix4f> bone_transforms;
+    /*std::vector<Eigen::Matrix4f> bone_transforms;
     static float time_in_seconds = 0.f;
     time_in_seconds += 1.f;
     if (time_in_seconds > 171.875f) {
@@ -86,7 +81,7 @@ void GLRenderer::Render() {
     for (size_t i = 0; i < bone_transforms.size(); ++i) {
       const std::string uniform_name = std::string("bone_transforms") + "[" + std::to_string(i) + "]";
       gl_shader_helper_ptr_->SetEigenMat4(uniform_name, bone_transforms[i]);
-    }
+    }*/
 
     glBindVertexArray(VAO_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
@@ -157,6 +152,9 @@ void GLRenderer::LoadTextures(const assets::Textures* textures_asset) {
   gl_shader_helper_ptr_->use();
   // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
   gl_shader_helper_ptr_->setInt("diffuse_sampler", static_cast<int>(TextureUnit::diffuse_texture_unit));
+  gl_shader_helper_ptr_->setInt("specular_sampler", static_cast<int>(TextureUnit::specular_texture_unit));
+  gl_shader_helper_ptr_->setInt("normal_sampler", static_cast<int>(TextureUnit::normal_texture_unit));
+  gl_shader_helper_ptr_->setInt("alpha_sampler", static_cast<int>(TextureUnit::alpha_texture_unit));
 
   for (size_t i = 0; i < textures_asset->textures_file_paths_.size(); ++i) {
     const std::string& texture_file_path = textures_asset->textures_file_paths_[i];
@@ -209,6 +207,10 @@ void GLRenderer::BindTexture(const Mesh::Texture& texture) {
     }
     case Mesh::Texture::TextureType::normal: {
       texture_unit = GL_TEXTURE2;
+      break;
+    }
+    case Mesh::Texture::TextureType::alpha: {
+      texture_unit = GL_TEXTURE3;
       break;
     }
     default: {

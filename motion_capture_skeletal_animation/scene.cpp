@@ -63,7 +63,7 @@ void Scene::LoadModels(Renderer* renderer) {
     models_.back().SetTotalIndicesNumberForAllMeshes(mesh_vertices_asset->model_all_meshes_indices_number_);   
 
     // Prepare textures file paths to read and upload  
-    models_.back().GetAllMeshesTexturesFilePaths(textures_asset->textures_file_paths_);
+    models_.back().GetAllMeshesTexturesFilePaths(textures_asset->texture_type_set_, textures_asset->textures_file_paths_);
   }
 
   assets.emplace_back(std::move(mesh_vertices_asset));
