@@ -1,9 +1,10 @@
 #pragma once
 
 #include "scene.h"
-#include "renderer.h"
 
 namespace motion_animation {
+
+class Renderer;
 
 class SceneManager {
 public:
@@ -18,6 +19,15 @@ public:
 
   const Scene* GetCurrentScene() const {
     const Scene* scene_ptr = nullptr;
+    if (scenes_.find(current_scene_name_) != scenes_.end()) {
+      scene_ptr = &(scenes_.at(current_scene_name_));
+    }
+
+    return scene_ptr;
+  }
+
+  Scene* GetCurrentScene() {
+    Scene* scene_ptr = nullptr;
     if (scenes_.find(current_scene_name_) != scenes_.end()) {
       scene_ptr = &(scenes_.at(current_scene_name_));
     }

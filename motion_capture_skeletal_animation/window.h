@@ -2,9 +2,9 @@
 
 #include <cstdint>
 
-#include "renderer.h"
-
 namespace motion_animation {
+
+class Renderer;
 
 class Window {
  public:

@@ -4,9 +4,10 @@
 
 #include "model.h"
 #include "camera.h"
-#include "renderer.h"
 
 namespace motion_animation {
+
+class Renderer;
 
 // A Scene object has camera, lights, models.
 class Scene {
@@ -25,6 +26,8 @@ class Scene {
 
   // Note(wushiyuan): For real game engine: read a config file for the scene, then load corresponding assets.
   void LoadSceneAssets(Renderer* renderer);
+
+  void Update();
 
   const Camera& GetCamera() const {
     return camera_;

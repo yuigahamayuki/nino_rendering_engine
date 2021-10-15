@@ -7,6 +7,8 @@
 #include <GLFW/glfw3.h>
 
 #include "input_manager.h"
+#include "scene_manager.h"
+#include "renderer.h"
 
 namespace {
 
@@ -69,6 +71,13 @@ void GLWindow::Loop(Renderer* renderer) {
     // input
     // -----
     processInput(window_);
+
+    // update
+    // -----
+    Scene* current_scene = SceneManager::GetSharedInstance().GetCurrentScene();
+    if (current_scene) {
+      current_scene->Update();
+    }
 
     // render
     // ------

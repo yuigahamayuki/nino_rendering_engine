@@ -3,6 +3,7 @@
 #include "model_importer.h"
 #include "assets.h"
 #include "config_manager.h"
+#include "renderer.h"
 
 namespace motion_animation {
 
@@ -10,6 +11,10 @@ void Scene::LoadSceneAssets(Renderer* renderer) {
   LoadModels(renderer);
   LoadCamera();
   LoadLights();
+}
+
+void Scene::Update() {
+  camera_.Update();
 }
 
 void Scene::GetAllModelsDrawArguments(std::vector<Mesh::DrawArugument>& all_models_draw_arguments) const {
@@ -74,9 +79,9 @@ void Scene::LoadCamera() {
   ConfigManager::GetSharedInstance().GetCameraConfigOfScene(scene_name_, scene_camera_config);
 
   Eigen::Vector3f camera_pos(scene_camera_config.pos_x, scene_camera_config.pos_y, scene_camera_config.pos_z);
-  Eigen::Vector3f look_target(scene_camera_config.look_x, scene_camera_config.look_y, scene_camera_config.look_z);
+  Eigen::Vector3f look_direction(scene_camera_config.look_x, scene_camera_config.look_y, scene_camera_config.look_z);
   Eigen::Vector3f up(scene_camera_config.up_x, scene_camera_config.up_y, scene_camera_config.up_z);
-  camera_.Set(camera_pos, look_target, up);
+  camera_.Set(camera_pos, look_direction, up);
 }
 
 void Scene::LoadLights() {

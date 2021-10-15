@@ -1,7 +1,5 @@
 #include "input_manager.h"
 
-#include <iostream>
-
 namespace motion_animation {
 
 InputManager& InputManager::GetSharedInstance() {
