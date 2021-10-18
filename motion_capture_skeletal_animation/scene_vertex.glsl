@@ -11,6 +11,30 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 bone_transforms[170];
 
+layout(std140) uniform BlendshapeWeights
+{
+    // Pack the floats to vec4, that is, one row has 4 floats.
+    // To get the value of index i: blendshape_weights[i / 4][i % 4].
+    vec4 blendshape_weights[];
+};
+
+struct BlendshapeVertex
+{
+    float position_x;
+    float position_y;
+    float position_z;
+    float normal_x;
+    float normal_y;
+    float normal_z;
+};
+
+layout(std430) buffer BlendshapeVertices
+{
+    // To get the i-th vertex's position:
+    // float pos_x = blendshape_vertices[i].position_x; ...
+    BlendshapeVertex blendshape_vertices[];
+};
+
 void main()
 {
     // mat4 bone_transform = bone_transforms[bone_ids[0]] * bone_weights[0];

@@ -148,6 +148,12 @@ void GLRenderer::LoadVertices(const assets::MeshVertices* mesh_vertices) {
     glGenBuffers(1, &SSBO_blendshape_vertices_);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO_blendshape_vertices_);
     glBufferData(GL_SHADER_STORAGE_BUFFER, mesh_vertices->model_all_blendshape_vertices_size_, mesh_vertices->model_all_meshes_blendshape_vertices_data_.data(), GL_STATIC_DRAW);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO_blendshape_vertices_);
+
+    glGenBuffers(1, &UBO_blendshape_weights_);
+    glBindBuffer(GL_UNIFORM_BUFFER, UBO_blendshape_weights_);
+    glBufferData(GL_UNIFORM_BUFFER, mesh_vertices->blendshape_number_ * sizeof(float), nullptr, GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, UBO_blendshape_weights_);
   }
 }
 

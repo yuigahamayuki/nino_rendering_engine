@@ -42,6 +42,7 @@ struct MeshVertices : public Asset {
   std::vector<Mesh::BlendshapeVertex> model_all_meshes_blendshape_vertices_data_;
   size_t model_all_blendshape_vertices_size_ = 0;
   size_t model_all_blendshape_vertices_number_ = 0;
+  size_t blendshape_number_ = 0;
 };  // struct MeshVertices
 
 struct Textures : public Asset {
