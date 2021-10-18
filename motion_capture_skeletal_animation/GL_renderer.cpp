@@ -80,6 +80,12 @@ void GLRenderer::Render() {
       gl_shader_helper_ptr_->SetEigenMat4(uniform_name, bone_transforms[i]);
     }*/
 
+    /*std::vector<float> blendshape_weights(52);
+    blendshape_weights[24] = 1.f;
+    blendshape_weights[5] = 1.f;
+    blendshape_weights[8] = 1.f;
+    glBufferData(GL_UNIFORM_BUFFER, 52 * sizeof(float), blendshape_weights.data(), GL_STATIC_DRAW);*/
+
     glBindVertexArray(VAO_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
     std::vector<Mesh::DrawArugument> all_models_draw_arguments;
@@ -88,6 +94,9 @@ void GLRenderer::Render() {
       for (size_t i = 0; i < draw_argument.textures_.size(); ++i) {
         BindTexture(draw_argument.textures_[i]);
       }
+      gl_shader_helper_ptr_->setInt("blendshape_number", draw_argument.blendshape_number_);
+      gl_shader_helper_ptr_->setInt("blendshape_vertex_base", draw_argument.blendshape_vertex_base_);
+      gl_shader_helper_ptr_->setInt("vertex_count_per_blendshape", draw_argument.vertex_count_);
       glDrawElementsInstancedBaseVertex(GL_TRIANGLES, draw_argument.index_count_, GL_UNSIGNED_INT, reinterpret_cast<void*>(draw_argument.index_start_ * sizeof(uint32_t)), 1, draw_argument.vertex_base_);
     });
   }

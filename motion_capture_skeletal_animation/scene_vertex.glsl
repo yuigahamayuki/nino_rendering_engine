@@ -10,12 +10,16 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 bone_transforms[170];
+uniform int blendshape_number;
+uniform int blendshape_vertex_base;
+uniform int vertex_count_per_blendshape;  // same as base mesh's vertex count
 
 layout(std140) uniform BlendshapeWeights
 {
     // Pack the floats to vec4, that is, one row has 4 floats.
-    // To get the value of index i: blendshape_weights[i / 4][i % 4].
-    vec4 blendshape_weights[];
+    // To get the value of blendshape index i: blendshape_weights[i / 4][i % 4].
+    // vec4 blendshape_weights[];  // Not ok: OpenGL requires constant indexes for unsized array access
+    vec4 blendshape_weights[52];
 };
 
 struct BlendshapeVertex
@@ -51,5 +55,13 @@ void main()
 
     // gl_Position = projection * view * model * bone_transform * vec4(position, 1.0f);
     tex_coord = vec2(texture_coord.x, 1.f - texture_coord.y);
-    gl_Position = projection * view * model *  vec4(position, 1.0f);
+    // gl_Position = projection * view * model * vec4(position, 1.0f);
+    vec4 out_position = vec4(position, 1.0f);
+    for (int i = 0; i < blendshape_number; ++i)
+    {
+        float blendshape_weight = blendshape_weights[i / 4][i % 4];
+        int blendshape_vertex_index = blendshape_vertex_base + gl_VertexID - gl_BaseVertex + i * vertex_count_per_blendshape;
+        out_position += blendshape_weight * vec4(blendshape_vertices[blendshape_vertex_index].position_x, blendshape_vertices[blendshape_vertex_index].position_y, blendshape_vertices[blendshape_vertex_index].position_z, 0);
+    }
+    gl_Position = projection * view * model * out_position;
 }

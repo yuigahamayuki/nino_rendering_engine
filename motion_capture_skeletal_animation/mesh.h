@@ -49,6 +49,8 @@ class Mesh {
     uint32_t vertex_count_ = 0;
     uint32_t vertex_base_ = 0;
     std::vector<Texture> textures_;
+    uint32_t blendshape_number_ = 0;  // number of blendshapes for a mesh, e.g. 52 for ARKit-like blendshapes.
+    uint32_t blendshape_vertex_base_ = 0;  // blendshape vertex index offset for a mesh.
   };
 
   static size_t GetSingleVertexSize() {

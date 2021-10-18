@@ -28,6 +28,7 @@ void Scene::GetAllModelsDrawArguments(std::vector<Mesh::DrawArugument>& all_mode
     std::vector<Mesh::DrawArugument> single_model_draw_arguments;
     model.GetAllMeshesDrawArguments(single_model_draw_arguments);
     
+    // TODO(wushiyuan): multi model blendshape draw arguments.
     uint32_t single_model_total_vertices_number = single_model_draw_arguments.back().vertex_base_ + single_model_draw_arguments.back().vertex_count_;
     uint32_t single_model_total_indices_number = single_model_draw_arguments.back().index_start_ + single_model_draw_arguments.back().index_count_;
 

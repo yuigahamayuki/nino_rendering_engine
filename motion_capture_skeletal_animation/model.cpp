@@ -75,6 +75,7 @@ void Model::GetAllMeshesDrawArguments(std::vector<Mesh::DrawArugument>& draw_arg
 
   uint32_t accumulated_index_start = 0;
   uint32_t accumulated_vertex_base = 0;
+  uint32_t accumulated_blendshape_vertex_base = 0;
   for (size_t i = 0; i < meshes_.size(); ++i) {
     draw_arguments[i].index_count_ = static_cast<uint32_t>(meshes_[i]->GetIndicesNumber());
     draw_arguments[i].vertex_count_ = static_cast<uint32_t>(meshes_[i]->GetVerticesNumber());
@@ -85,6 +86,11 @@ void Model::GetAllMeshesDrawArguments(std::vector<Mesh::DrawArugument>& draw_arg
 
     accumulated_index_start += static_cast<uint32_t>(meshes_[i]->GetIndicesNumber());
     accumulated_vertex_base += static_cast<uint32_t>(meshes_[i]->GetVerticesNumber());
+
+    size_t blendshape_number = meshes_[i]->GetBlendshapeVerticesNumber() / meshes_[i]->GetVerticesNumber();
+    draw_arguments[i].blendshape_number_ = static_cast<uint32_t>(blendshape_number);
+    draw_arguments[i].blendshape_vertex_base_ = accumulated_blendshape_vertex_base;
+    accumulated_blendshape_vertex_base += static_cast<uint32_t>(meshes_[i]->GetBlendshapeVerticesNumber());
   }
 }
 
