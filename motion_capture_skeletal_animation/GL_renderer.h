@@ -38,6 +38,7 @@ private:
   uint32_t VAO_ = 0;
   uint32_t VBO_ = 0;
   uint32_t EBO_ = 0;
+  uint32_t SSBO_blendshape_vertices_ = 0;
 
   std::vector<GLuint> texture_ids_;
   std::map<std::string, GLuint> texture_file_path_id_map_;

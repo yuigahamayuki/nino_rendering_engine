@@ -20,6 +20,8 @@ class AssimpMesh : public Mesh {
 
   void GetTexturesTypesAndFilePaths(std::set<Texture::TextureType>& texture_type_set, std::vector<std::string>& textures_file_paths) override;
 
+  void GetBlendshapeData(std::vector<BlendshapeVertex>& blendshape_vertices_data, size_t& blendshape_vertices_size, size_t& blendshape_vertices_number) override;
+
  private:
    void GetTexturesFilePathsForTextureType(const aiMaterial* material, aiTextureType assimp_texture_type, std::set<Texture::TextureType>& texture_type_set, std::vector<std::string>& textures_file_paths);
 

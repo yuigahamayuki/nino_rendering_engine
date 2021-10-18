@@ -43,6 +43,20 @@ void Model::GetAllMeshesTexturesFilePaths(std::set<Mesh::Texture::TextureType>& 
   });
 }
 
+void Model::GetAllMeshesBlendshapeData(std::vector<Mesh::BlendshapeVertex>& all_meshes_blendshapes_vertices_data, size_t& all_meshes_blendshapes_vertices_size, 
+                                       size_t& all_meshes_blendshapes_vertices_number) {
+  std::for_each(meshes_.begin(), meshes_.end(), [&all_meshes_blendshapes_vertices_data, &all_meshes_blendshapes_vertices_size, &all_meshes_blendshapes_vertices_number](std::unique_ptr<Mesh>& mesh) {
+    std::vector<Mesh::BlendshapeVertex> single_mesh_blendshape_vertices_data;
+    size_t single_mesh_blendshape_vertices_size = 0;
+    size_t single_mesh_blendshape_vertices_number = 0;
+    mesh->GetBlendshapeData(single_mesh_blendshape_vertices_data, single_mesh_blendshape_vertices_size, single_mesh_blendshape_vertices_number);
+
+    all_meshes_blendshapes_vertices_data.insert(all_meshes_blendshapes_vertices_data.end(), single_mesh_blendshape_vertices_data.begin(), single_mesh_blendshape_vertices_data.end());
+    all_meshes_blendshapes_vertices_size += single_mesh_blendshape_vertices_size;
+    all_meshes_blendshapes_vertices_number += single_mesh_blendshape_vertices_number;
+  });
+}
+
 void Model::LoadAnimations() {
   ModelImporter::GetSharedInstance().LoadAllAnimationsForModel(model_name_);
 }

@@ -12,8 +12,8 @@ class Mesh {
   struct Vertex {
     Vertex() = default;
 
-    float positions_[3]{};
-    float normals_[3]{};
+    float position_[3]{};
+    float normal_[3]{};
     float texture_coordinates_[2]{};
     int bone_ids_[4]{-1, -1, -1, -1};
     float bone_weights_[4]{};
@@ -36,6 +36,13 @@ class Mesh {
     std::string texture_file_path_;
   };
 
+  struct BlendshapeVertex {
+    BlendshapeVertex() = default;
+
+    float position_[3]{};
+    float normal_[3]{};
+  };  // struct BlendshapeVertex
+
   struct DrawArugument {
     uint32_t index_count_ = 0;
     uint32_t index_start_ = 0;
@@ -50,6 +57,10 @@ class Mesh {
 
   static size_t GetSingleIndexSize() {
     return sizeof(uint32_t);
+  }
+
+  static size_t GetSingleBlendshapeVertexSize() {
+    return sizeof(BlendshapeVertex);
   }
 
   Mesh() = default;
@@ -73,6 +84,14 @@ class Mesh {
 
   const size_t GetIndicesNumber() const {
     return indices_number_;
+  }
+
+  const size_t GetBlendshapeVerticesSize() const {
+    return blendshape_vertices_size_;
+  }
+
+  const size_t GetBlendshapeVerticesNumber() const {
+    return blendshape_vertices_number_;
   }
 
   const std::vector<Texture> GetTextures() const {
@@ -103,6 +122,14 @@ class Mesh {
     indices_number_ = indices_number;
   }
 
+  void SetBlendshapeVerticesSize(size_t blendshape_vertices_size) {
+    blendshape_vertices_size_ = blendshape_vertices_size;
+  }
+
+  void SetBlendshapeVerticesNumber(size_t blendshape_vertices_number) {
+    blendshape_vertices_number_ = blendshape_vertices_number;
+  }
+
   void InsertTexture(Texture::TextureType texture_type, const std::string& texture_file_path) {
     textures_.emplace_back(texture_type, texture_file_path);
   }
@@ -116,6 +143,8 @@ class Mesh {
   // Get textures file paths attached to this mesh, a mesh may have multiple textures, e.g, diffuse, normal, etc.
   virtual void GetTexturesTypesAndFilePaths(std::set<Texture::TextureType>& texture_type_set, std::vector<std::string>& textures_file_paths) = 0;
 
+  virtual void GetBlendshapeData(std::vector<BlendshapeVertex>& blendshape_vertices_data, size_t& blendshape_vertices_size, size_t& blendshape_vertices_number) = 0;
+
  private:
   std::string mesh_name_;
 
@@ -124,6 +153,10 @@ class Mesh {
 
   size_t indices_size_ = 0;
   size_t indices_number_ = 0;
+
+  size_t blendshape_vertices_size_ = 0;
+  // blendshape count * vertex number per blendshape
+  size_t blendshape_vertices_number_ = 0;
 
   std::vector<Texture> textures_;
 

@@ -42,6 +42,9 @@ class Model {
 
   void GetAllMeshesTexturesFilePaths(std::set<Mesh::Texture::TextureType>& all_meshes_texture_type_set, std::vector<std::string>& all_meshes_textures_file_paths);
 
+  void GetAllMeshesBlendshapeData(std::vector<Mesh::BlendshapeVertex>& all_meshes_blendshapes_vertices_data, size_t& all_meshes_blendshapes_vertices_size,
+                                  size_t& all_meshes_blendshapes_vertices_number);
+
   void LoadAnimations();
 
   void GetAllMeshesDrawArguments(std::vector<Mesh::DrawArugument>& draw_arguments) const;

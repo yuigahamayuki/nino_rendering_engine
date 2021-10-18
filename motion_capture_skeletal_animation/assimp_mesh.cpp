@@ -87,13 +87,13 @@ void AssimpMesh::GetVertexData(std::vector<Vertex>& vertices_data, size_t& verti
 
     for (uint32_t i = 0; i < mesh->mNumVertices; ++i) {
       Vertex vertex;
-      vertex.positions_[0] = mesh->mVertices[i].x;
-      vertex.positions_[1] = mesh->mVertices[i].y;
-      vertex.positions_[2] = mesh->mVertices[i].z;
+      vertex.position_[0] = mesh->mVertices[i].x;
+      vertex.position_[1] = mesh->mVertices[i].y;
+      vertex.position_[2] = mesh->mVertices[i].z;
       if (mesh->mNormals) {
-        vertex.normals_[0] = mesh->mNormals[i].x;
-        vertex.normals_[1] = mesh->mNormals[i].y;
-        vertex.normals_[2] = mesh->mNormals[i].z;
+        vertex.normal_[0] = mesh->mNormals[i].x;
+        vertex.normal_[1] = mesh->mNormals[i].y;
+        vertex.normal_[2] = mesh->mNormals[i].z;
       }
       if (mesh->mTextureCoords[0]) {
         vertex.texture_coordinates_[0] = mesh->mTextureCoords[0][i].x;
@@ -166,6 +166,54 @@ void AssimpMesh::GetTexturesTypesAndFilePaths(std::set<Texture::TextureType>& te
       GetTexturesFilePathsForTextureType(material, aiTextureType_SPECULAR, texture_type_set, textures_file_paths);
       GetTexturesFilePathsForTextureType(material, aiTextureType_NORMALS, texture_type_set, textures_file_paths);
       GetTexturesFilePathsForTextureType(material, aiTextureType_OPACITY, texture_type_set, textures_file_paths);
+    }
+  }
+}
+
+void AssimpMesh::GetBlendshapeData(std::vector<BlendshapeVertex>& blendshape_vertices_data, size_t& blendshape_vertices_size, size_t& blendshape_vertices_number) {
+  blendshape_vertices_data.clear();
+  blendshape_vertices_size = 0;
+  blendshape_vertices_number = 0;
+  if (!assimp_scene_ptr_) {
+    return;
+  }
+
+  auto total_mesh_number = assimp_scene_ptr_->mNumMeshes;
+  if (mesh_index_of_assimp_ < total_mesh_number) {
+    auto mesh = assimp_scene_ptr_->mMeshes[mesh_index_of_assimp_];
+    uint32_t blendshape_count = mesh->mNumAnimMeshes;
+    if (blendshape_count > 0) {
+      for (uint32_t i = 0; i < blendshape_count; ++i) {
+        auto blendshape_mesh = mesh->mAnimMeshes[i];
+        std::string blendshape_name = blendshape_mesh->mName.C_Str();
+        // TODO(wushiyuan): I only need IOS ARKit blendshapes,
+        // the model I downloaded contains other blendshapes whose names
+        // start with uppercase letter, while ARKit blendshapes' names
+        // start with lowercase letter.
+        if (blendshape_name[0] >= 'a' && blendshape_name[0] <= 'z') {
+          // The vertex count of blendshape mesh and that of original mesh are supposed to be the same.
+          for (uint32_t j = 0; j < blendshape_mesh->mNumVertices; ++j) {
+            BlendshapeVertex blendshape_vertex;
+            // Note(wushiyuan): upload the difference of vector.
+            blendshape_vertex.position_[0] = blendshape_mesh->mVertices[j].x - mesh->mVertices[j].x;
+            blendshape_vertex.position_[1] = blendshape_mesh->mVertices[j].y - mesh->mVertices[j].y;
+            blendshape_vertex.position_[2] = blendshape_mesh->mVertices[j].z - mesh->mVertices[j].z;
+            if (blendshape_mesh->mNormals && mesh->mNormals) {
+              blendshape_vertex.normal_[0] = blendshape_mesh->mNormals[j].x - mesh->mNormals[j].x;
+              blendshape_vertex.normal_[1] = blendshape_mesh->mNormals[j].y - mesh->mNormals[j].y;
+              blendshape_vertex.normal_[2] = blendshape_mesh->mNormals[j].z - mesh->mNormals[j].z;
+            }
+
+            blendshape_vertices_data.emplace_back(blendshape_vertex);
+            blendshape_vertices_number++;
+            blendshape_vertices_size += GetSingleBlendshapeVertexSize();
+          }
+        }
+      }
+
+      // blendshape vertices number = blendshape count * vertex number per blendshape
+      SetBlendshapeVerticesNumber(blendshape_vertices_number);
+      SetBlendshapeVerticesSize(blendshape_vertices_size);
     }
   }
 }

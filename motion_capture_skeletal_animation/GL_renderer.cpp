@@ -39,7 +39,6 @@ void GLRenderer::Render() {
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // TODO(wushiyuan): implement more
     auto scene_ptr = SceneManager::GetSharedInstance().GetCurrentScene();
     if (!scene_ptr) {
       return;
@@ -143,6 +142,13 @@ void GLRenderer::LoadVertices(const assets::MeshVertices* mesh_vertices) {
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh_vertices->model_all_meshes_indices_size_, mesh_vertices->model_all_meshes_indices_data_.data(), GL_STATIC_DRAW);
+
+  // blendshape related buffer objects
+  if (mesh_vertices->model_all_blendshape_vertices_number_ > 0) {
+    glGenBuffers(1, &SSBO_blendshape_vertices_);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO_blendshape_vertices_);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, mesh_vertices->model_all_blendshape_vertices_size_, mesh_vertices->model_all_meshes_blendshape_vertices_data_.data(), GL_STATIC_DRAW);
+  }
 }
 
 void GLRenderer::LoadTextures(const assets::Textures* textures_asset) {

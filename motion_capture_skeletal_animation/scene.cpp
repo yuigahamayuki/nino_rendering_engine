@@ -64,6 +64,9 @@ void Scene::LoadModels(Renderer* renderer) {
 
     // Prepare textures file paths to read and upload  
     models_.back().GetAllMeshesTexturesFilePaths(textures_asset->texture_type_set_, textures_asset->textures_file_paths_);
+
+    // Prepare blendshape data to upload
+    models_.back().GetAllMeshesBlendshapeData(mesh_vertices_asset->model_all_meshes_blendshape_vertices_data_, mesh_vertices_asset->model_all_blendshape_vertices_size_, mesh_vertices_asset->model_all_blendshape_vertices_number_);
   }
 
   assets.emplace_back(std::move(mesh_vertices_asset));
